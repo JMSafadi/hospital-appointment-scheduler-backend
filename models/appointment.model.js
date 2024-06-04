@@ -8,20 +8,34 @@ const Appointment = sequelize.define('Appointment', {
     allowNull: false,
     primaryKey: true
   },
-  patient: {
-    type: DataTypes.STRING,
-    allowNull: false
+  patientId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Patient',
+      key: 'id'
+    }
   },
   hospital: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  doctor: {
-    type: DataTypes.STRING,
-    allowNull: false
+  doctorId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Doctor',
+      key: 'id'
+    }
   },
   appointment_date: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
+  start_time: {
+    type: DataTypes.TIME,
+    allowNull: false
+  },
+  end_time: {
+    type: DataTypes.TIME,
     allowNull: false
   }
 })

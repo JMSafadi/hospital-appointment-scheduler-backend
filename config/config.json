@@ -1,7 +1,21 @@
 {
   "development": {
     "username": "root",
-    "password": "yourpassword",
+    "password": "asd123",
+    "database": "hospital_scheduler",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "asd123",
+    "database": "hospital_scheduler_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "asd123",
     "database": "hospital_scheduler",
     "host": "127.0.0.1",
     "dialect": "mysql"

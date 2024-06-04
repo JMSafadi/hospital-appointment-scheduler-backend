@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize")
+const {  DataTypes } = require("sequelize")
 const sequelize = require('../config/database')
 
 const Doctor = sequelize.define('Doctor', {
@@ -15,20 +15,28 @@ const Doctor = sequelize.define('Doctor', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  work_schedule: {
-    type: DataTypes.STRING,
+  work_days: {
+    type: DataTypes.JSON,
     allowNull: false,
   },
-  availability: { // Nested with work_schedule?
-    type: DataTypes.STRING,
-    allowNull: false,
+  start_time: {
+    type: DataTypes.TIME,
+    allowNull: false
+  },
+  end_time: {
+    type: DataTypes.TIME,
+    allowNull: false
+  },
+  availability: {
+    type: DataTypes.JSON,
+    allowNull: false
   },
   max_age: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
   hospital: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
     allowNull: false
   }
 })

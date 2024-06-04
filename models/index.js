@@ -1,9 +1,9 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require('../config/database')
 
-const Patient = require('./patient')
-const Doctor = require('./doctor')
-const Appointment = require('./appointment')
+const Patient = require('./patient.model')
+const Doctor = require('./doctor.model')
+const Appointment = require('./appointment.model')
 
 // Initialize models
 const db = {}
