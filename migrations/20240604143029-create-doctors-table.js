@@ -34,9 +34,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true
       },
-      hospital: {
-        type: Sequelize.JSON,
-        allowNull: false
+      hospitalId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        reference: {
+          model: 'Hospitals',
+          key: 'id'
+        }
       }
     })
   },

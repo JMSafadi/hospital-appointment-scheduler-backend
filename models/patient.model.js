@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize")
-const sequelize = require('../config/database')
+const { sequelize } = require('../config/database')
 
 const Patient = sequelize.define('Patient', {
   id: {
@@ -11,7 +11,7 @@ const Patient = sequelize.define('Patient', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  mail: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -23,6 +23,9 @@ const Patient = sequelize.define('Patient', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+}, {
+  sequelize,
+  modelName: 'Patient'
 })
 
 module.exports = Patient

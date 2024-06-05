@@ -1,12 +1,19 @@
 const express = require('express')
 const cors = require('cors')
+const { sequelize, testConnection, createDatabase } = require('./config/database')
 const db = require('./models')
 
 const port = 3000
-
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+
+async function initializeApp() {
+  await testConnection()
+  await createDatabase()
+  // Retry with delay
+}
 
 // Routes
 const patientsRouter = require('./routes/patients.router')
@@ -22,11 +29,8 @@ app.get('/api', (req, res) => {
 })
 
 
-db.sequelize.sync()
-  .then(() => {
-    console.log('Database sync')
-    app.listen(process.env.PORT || port, () => {
-      console.log(`Server running in PORT: ${port}`)
-    })
-  })
-  .catch(err => console.error('Unable to sync db: ', err))
+app.listen(process.env.PORT || port, () => {
+  console.log(`Server running in PORT: ${port}`)
+})
+
+initializeApp()

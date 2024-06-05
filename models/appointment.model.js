@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize")
-const sequelize = require('../config/database')
+const { sequelize } = require('../config/database')
 
 const Appointment = sequelize.define('Appointment', {
   id: {
@@ -10,19 +10,25 @@ const Appointment = sequelize.define('Appointment', {
   },
   patientId: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
-      model: 'Patient',
+      model: 'Patients',
       key: 'id'
     }
   },
-  hospital: {
+  hospitalId: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    references: {
+      model: 'Hospitals',
+      key: 'id'
+    }
   },
   doctorId: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
-      model: 'Doctor',
+      model: 'Doctors',
       key: 'id'
     }
   },
@@ -38,6 +44,9 @@ const Appointment = sequelize.define('Appointment', {
     type: DataTypes.TIME,
     allowNull: false
   }
+}, {
+  sequelize,
+  modelName: 'Appointment'
 })
 
 module.exports = Appointment

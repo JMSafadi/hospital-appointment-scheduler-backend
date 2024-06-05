@@ -1,9 +1,10 @@
 const {  DataTypes } = require("sequelize")
-const sequelize = require('../config/database')
+const { sequelize } = require('../config/database')
 
 const Doctor = sequelize.define('Doctor', {
   id: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     autoIncrement: true,
     primaryKey: true
   },
@@ -13,10 +14,6 @@ const Doctor = sequelize.define('Doctor', {
   },
   specialization: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  work_days: {
-    type: DataTypes.JSON,
     allowNull: false,
   },
   start_time: {
@@ -35,10 +32,17 @@ const Doctor = sequelize.define('Doctor', {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-  hospital: {
-    type: DataTypes.JSON,
-    allowNull: false
+  hospitalId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Hospitals',
+      key: 'id'
+    }
   }
+}, {
+  sequelize,
+  modelName: 'Doctor'
 })
 
 module.exports = Doctor
