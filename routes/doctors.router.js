@@ -1,7 +1,7 @@
 const express = require('express')
-const router = express.Router()
+const db = require('../db/database')
 
-const { Doctor } = require('../models')
+const router = express.Router()
 
 // Get doctor
 router.get('/', (req, res) => {

@@ -1,19 +1,13 @@
 const express = require('express')
 const cors = require('cors')
-const { sequelize, testConnection, createDatabase } = require('./config/database')
-const db = require('./models')
+
+const db = require('./db/database')
 
 const port = 3000
 const app = express()
 app.use(cors())
 app.use(express.json())
 
-
-async function initializeApp() {
-  await testConnection()
-  await createDatabase()
-  // Retry with delay
-}
 
 // Routes
 const patientsRouter = require('./routes/patients.router')
@@ -32,5 +26,3 @@ app.get('/api', (req, res) => {
 app.listen(process.env.PORT || port, () => {
   console.log(`Server running in PORT: ${port}`)
 })
-
-initializeApp()

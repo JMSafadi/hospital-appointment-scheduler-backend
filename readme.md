@@ -1,10 +1,10 @@
 # Hospital Appointmnet Scheduler
 
-**Content**
+## Content
 1. [Description](#description)
 2. [Technical requirements](#technical-requirements)
 3. [Base URL](#base-url)
-4. [Api Documentation](#api-documentation)<br>
+4. [API Documentation](#api-documentation)<br>
 4.1 [Endpoint api/patients](#)<br>
 4.2 [Endpoint api/doctors](#)<br>
 4.3 [Endpoint api/hospitals](#)<br>
@@ -15,7 +15,9 @@
 
 
 ## Description
-This project is a hospital appointment scheduling system where users can login as patients and schedule medical appointments. Once the user logs in, they can choose a specialization and symptoms, and the system recommends the closest available appoitments date with a suggested doctor and hospital. Also each patient can see all their appointments scheduled and the corresponding information about it.
+This project is for a hospital appointment scheduling system where users can login as patients and schedule medical appointments. Once the user logs in, they can choose a specialization or symptoms, and the system recommends the closest available appoitments date with a suggested doctor and hospital. Also each patient can see all their appointments scheduled and the corresponding information about it.
+
+This documentation covers all the endpoints, request and response, and other technical details related to the database and how to integrate and use the API.
 
 
 ## Technical requirements
@@ -34,7 +36,9 @@ This project is a hospital appointment scheduling system where users can login a
 ### 1. Endpoint `api/patients`:
 #### `GET` - `api/patients`
 Retrieves a list with all patients.
-- Status code 200 and get all patients
+- Status code 200 and all patients records.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found. 
 
 Request:
 ```
@@ -60,8 +64,10 @@ Response:
 
 ### `GET` - `api/patients/{patient_id}`
 Retrieves one specific patient by unique id.
-- Status code 200 and if id exists.
-- Status code 404 and message if id is not found.
+- Status code 200 if id exists and patient record.
+- Status code 400 if query parameters are invalid.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -74,40 +80,47 @@ curl -X 'GET'
 ```
 Response:
 ```
-[{
+{
   "id": 2,
   "name": "string",
   "email": "string",
   "password": "string",
   "age": 30,
-}]
+}
 ```
+
 ### `POST` - `/api/patients`
 Create new record about a patient in database. The request body must contain some required information to be successful.
-- Status code 201 if has led to the creation of a resource.
-- Status code 400 and corresponding message if request body does not contain required fields
+- Status code 201 if resource has been created successfully.
+- Status code 400 and corresponding message if request body does not contain required fields.
 - Status code 409 and corresponding message if request body already exists.
 
 Request:
 ```
 curl -X 'POST'
 'api/patients'
-```
-Response:
-```
-[{
+-d '{
   "id": 5,
   "name": "string",
   "email": "string",
   "password": "string",
   "age": 25,
-}]
+}'
+```
+Response:
+```
+{
+  "id": 5,
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "age": 25,
+}
 ```
 
 ### `DELETE` - `api/patients/{patient_id}`
 Delete patient record by unique id.
 - Status code 200 and message if id found record and deleted.
-- Status code 204 if id found and record deleted but has no response.
 - Status code 404 if id not found.
 
 | Parameter | Type | Required | Description |
@@ -121,15 +134,17 @@ curl -X 'DELETE'
 ```
 Response:
 ```
-[{
+{
   "message": "The resource has been deleted successfully."
-}]
+}
 ```
 
-### 2. Endpoint `api/v2/doctors`:
+### 2. Endpoint `api/doctors`:
 #### `GET` - `api/doctors`
 Retrieves a list with all doctors.
-- Status code 200 and get all doctors.
+- Status code 200 and all doctors records.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found. 
 
 Request:
 ```
@@ -176,8 +191,10 @@ Response:
 
 #### `GET` - `api/doctors/{doctor_id}`
 Retrieves one specific doctor by unique id.
-- Status code 200 and record if id exists
-- Status code 404 and message if id is not found.
+- Status code 200 if id exists and doctor record.
+- Status code 400 if query parameters are invalid.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -190,7 +207,7 @@ curl -X 'GET'
 ```
 Response:
 ```
-[{
+{
   "id": 1,
   "name": "string",
   "specialization": "Cardiology",
@@ -223,23 +240,20 @@ Response:
     "name":"Evergreen Health Hospital",
     "location": "14570 Alanna Mountains, New Erickaton, ND 66081"
   }
-}]
+}
 ```
 
 ### `POST` - `api/doctors`
 Create new record about a doctor in database. The request body must contain some required information to be successful.
-- Status code 201 if has led to the creation of a resource.
-- Status code 400 and corresponding message if request body does not contain required fields
+- Status code 201 if resource has been created successfully.
+- Status code 400 and corresponding message if request body does not contain required fields.
 - Status code 409 and corresponding message if request body already exists.
 
 Request:
 ```
 curl -X 'POST'
 'api/doctors'
-```
-Response:
-```
-[{
+-d '{
   "name": "string",
   "specialization": "string",
   "start_time": '11:00:00',
@@ -289,14 +303,68 @@ Response:
 "hospital": {
   "name": "string",
   "location": "string"
+  }
+}'
+```
+Response:
+```
+{
+  "name": "string",
+  "specialization": "string",
+  "start_time": '11:00:00',
+  "end_time": '19:00:00',
+  "availability": {
+  "monday": {
+    "availability_time": [
+      '11:00:00',
+      '13:00:00',
+      '15:00:00',
+      '17:00:00',
+    ]
+  },
+  "tuesday": {
+    "availability_time": [
+      '11:00:00',
+      '13:00:00',
+      '15:00:00',
+      '17:00:00',
+    ]
+  },
+  "wednesday": {
+    "availability_time": [
+      '11:00:00',
+      '13:00:00',
+      '15:00:00',
+      '17:00:00',
+    ]
+  },
+  "thursday": {
+    "availability_time": [
+      '11:00:00',
+      '13:00:00',
+      '15:00:00',
+      '17:00:00',
+    ]
+  },
+  "friday": {
+    "availability_time": [
+      '11:00:00',
+      '13:00:00',
+      '15:00:00',
+      '17:00:00',
+    ]
+  }
+},
+"hospital": {
+  "name": "string",
+  "location": "string"
+  }
 }
-},]
 ```
 
 ### `DELETE` - `api/doctors/{doctor_id}`
 Delete doctor record by unique id.
 - Status code 200 and message if id found record and deleted.
-- Status code 204 if id found and record deleted but has no response.
 - Status code 404 if id not found.
 
 | Parameter | Type | Required | Description |
@@ -310,15 +378,17 @@ curl -X 'DELETE'
 ```
 Response:
 ```
-[{
+{
   "message": "The resource has been deleted successfully."
-}]
+}
 ```
 
 #### 3. Endpoint `api/hospitals`:
-#### `GET` - `api/hospitals/`
+#### `GET` - `api/hospitals`
 Retrieves a list with all hospitals.
-- Status code 200 and get hospitals.
+- Status code 200 and all hospitals records.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found.
 
 Request:
 ```
@@ -344,8 +414,10 @@ Response:
 
 #### `GET` - `api/hospitals/{hospital_id}`
 Retrieves one specific hospital by unique id.
-- Status code 200 if id exists.
-- Status code 404 and message if id is not found.
+- Status code 200 if id exists and hospital record.
+- Status code 400 if query parameters are invalid.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -357,23 +429,24 @@ curl -X 'GET'
 ```
 Response:
 ```
-[{
+{
   "id": 3
   "name": "Hopewell Medical Center",
   "location": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
-}]
+}
 ```
 
 #### 4. Endpoint `api/appointments`:
 ### `GET` - `api/appointments`
 Retrieves a list of all appointments.
-- Status code 200 and get all appointments.
-- Status 404 if no appointment exists.
+- Status code 200 and all appointments records.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found.
 
 Request:
 ```
 curl -X 'GET'
-'api/appointments/'
+'api/appointments'
 ```
 Response:
 ```
@@ -398,8 +471,10 @@ Response:
 
 ### `GET` - `api/appointments/{appointment_id}`
 Retrieves one specific appointment by unique id.
-- Status code 200 and if id exists.
-- Status code 404 and message if id is not found.
+- Status code 200 if id exists and appointment record.
+- Status code 400 if query parameters are invalid.
+- Status code 401 if user is not authenticated. 
+- Status code 404 if requested resource is not found.
 
 Request:
 ```
@@ -408,7 +483,7 @@ curl -X 'GET'
 ```
 Response:
 ```
-[{
+{
   "id": 2,
   "patientId": 1,
   "hospital": "string",
@@ -416,27 +491,20 @@ Response:
   "appointment_date": "Tue Jun 11 2024 13:21:08",
   "start_time": "08:00:00",
   "end_time": "10:00:00"
-}]
+}
 ```
 
 ### `POST` - `api/appointments`
-Create new record about a appointment in database. The request body must contain some required information to be successful.
-- Status code 201 if has led to the creation of a resource.
-- Status code 400 and corresponding message if request body does not contain required fields
+Create new record about an appointment in database. The request body must contain some required information to be successful.
+- Status code 201 if resource has been created successfully.
+- Status code 400 and corresponding message if request body does not contain required fields.
 - Status code 409 and corresponding message if request body already exists.
-
-| Parameter | Type | Required | Description |
-| --- | --- | --- | --- |
-| appointment_id | integer | Yes | Unique ID to search for a appointment. |
 
 Request:
 ```
 curl -X 'POST'
 'api/appointments'
-```
-Response:
-```
-[{
+-d '{
   "id": 2,
   "patientId": 1,
   "hospital": "string",
@@ -444,13 +512,25 @@ Response:
   "appointment_date": "Tue Jun 11 2024 13:21:08",
   "start_time": "08:00:00",
   "end_time": "10:00:00"
-}]
+}'
+```
+Response:
+```
+{
+  "id": 2,
+  "patientId": 1,
+  "hospital": "string",
+  "doctorId": 3,
+  "appointment_date": "Tue Jun 11 2024 13:21:08",
+  "start_time": "08:00:00",
+  "end_time": "10:00:00"
+}
 ```
 
 ### `DELETE` - `api/appointments/{appointment_id}`
 Delete appointment record by unique id.
 - Status code 200 and message if id found record and deleted.
-- Status code 204 if id found and record deleted but has no response.
+- Status code  if id found and record deleted but has no response.
 - Status code 404 if id not found.
 
 | Parameter | Type | Required | Description |
@@ -464,31 +544,35 @@ curl -X 'DELETE'
 ```
 Response:
 ```
-[{
+{
   "message": "The resource has been deleted successfully."
-}]
+}
 ```
 
 #### 5. Endpoint `api/specializations`:
 
 
 
-## Database Diagram
+## Database diagram and relations
 [![image.png](https://i.postimg.cc/ncYbMDY2/image.png)](https://postimg.cc/GH2S59fT)
 
-### Relations
+- Patients entity represents each user registered and can have many or none appointments.
+- Doctors entity represents each doctor, and they can have one specialization and one hospital where they work.
+- Hospitals entity represents each hospital with name and location, and has no foreing keys.
+- Specializations entity represent each specialization and can have many doctors who practice it.
+- Appointments entity represents each appointment generated by users, and should have one patient, one hospital and one doctor.
 
 ## Install
-To install application in local
-1. Clone repository
+To install application in local.
+1. Clone repository:
 ```
 git clone https://github.com/JMSafadi/hospital-appointment-scheduler-backend
 ```
-2. Go to folder
+2. Go to folder:
 ```
 cd .\hospital-appointment-scheduler-backend
 ```
-3. Install dependencies
+3. Install dependencies:
 ```
 npm install
 ```
@@ -497,11 +581,11 @@ npm install
 To run application with Docker you must have Docker installed in your machine.<br>
 [Download Docker](https://www.docker.com/products/docker-desktop/)
 
-Run app
+Run app:
 ```
 docker compose up
 ```
-Stop app
+Stop app:
 ```
 docker compose down
 ```

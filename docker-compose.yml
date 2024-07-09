@@ -9,6 +9,9 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
     ports:
       - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./sql/create_doctors.sql:/docker-entrypoint-initdb.d/create_doctors.sql
 
   app:
     build:
@@ -25,3 +28,6 @@ services:
     depends_on:
       - db
     command: npm start
+
+volumes:
+ db-data:
