@@ -2,32 +2,44 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:latest
-    container_name: mysql_hospital_db
+    image: postgres:latest
+    container_name: postgres_hospital_db
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_PASS}
-      - MYSQL_DATABASE=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - "3306:3306"
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./sql/create_doctors.sql:/docker-entrypoint-initdb.d/create_doctors.sql
+      - "5432:5432"
+    # volumes:
+      # - db-data:/var/lib/mysql
+      # - ./sql/create_doctors.sql:/docker-entrypoint-initdb.d/create_doctors.sql
 
   app:
     build:
       context: .
     container_name: hospital_app
     environment:
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASS}
-      DB_HOST: ${DB_HOST}
-      DB_DIALECT: ${DB_DIALECT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_HOST=${DB_HOST}
+      - DB_DIALECT=${DB_DIALECT}
+      - DB_PORT=5432
     ports:
       - "3000:3000"
     depends_on:
       - db
     command: npm start
 
-volumes:
- db-data:
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+
+# volumes:
+#  db-data:

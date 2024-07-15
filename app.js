@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
+const pool = require('./db/database')
 
-const db = require('./db/database')
 
 const port = 3000
 const app = express()

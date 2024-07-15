@@ -1,15 +1,20 @@
 const express = require('express')
-const db = require('../db/database')
+const pool = require('../db/database')
 
 const router = express.Router()
 
 // Get doctor
-router.get('/', (req, res) => {
-  const selectQuery = 'SELECT * from Doctors'
-  db.query(selectQuery, (err, result) => {
-    if (err) return res.status(500).json({ error: err.message })
-    res.json(result)
-  })
+router.get('/', async (req, res) => {
+
+  const queryTest = 'CREATE TABLE doctors (id SERIAL PRIMARY KEY, name VARCHAR(100))'
+
+  try {
+    await pool.query(queryTest)
+  } catch (err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
+
 })
 
 module.exports = router
