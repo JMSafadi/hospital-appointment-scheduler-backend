@@ -1,25 +1,22 @@
 const express = require('express')
 const router = express.Router()
 
-// Create patient
-// router.post('/', async (req, res) => {
-//   try {
-//     const patient = await Patient.create(req.body)
-//     res.json(patient)
-//   } catch (error) {
-//     res.status(500).json({ error: error.message })
-//   }
-// })
+const pool = require('../db/database')
+
+// Create new patient
+router.post('/', async (req, res) => {
+
+})
 
 // Get patients
 router.get('/', async (req, res) => {
-  // try {
-  //   const patients = await Patient.findAll()
-  //   res.json(patients)
-  // } catch (error) {
-  //   res.status(500).json({ error: error.message })
-  // }
-  res.json('Patients route')
+  try {
+    const result = await pool.query('SELECT * FROM Patients')
+    res.status(200).json(result.rows)
+  } catch (err) {
+    console.log('Error fetching Patients:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
 })
 
 module.exports = router

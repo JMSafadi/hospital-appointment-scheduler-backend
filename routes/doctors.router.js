@@ -3,18 +3,15 @@ const pool = require('../db/database')
 
 const router = express.Router()
 
-// Get doctor
+// Get doctors
 router.get('/', async (req, res) => {
-
-  const queryTest = 'CREATE TABLE doctors (id SERIAL PRIMARY KEY, name VARCHAR(100))'
-
   try {
-    await pool.query(queryTest)
+    const result = await pool.query('SELECT * FROM Doctors')
+    res.status(200).json(result.rows)
   } catch (err) {
-    console.log(err)
-    res.sendStatus(500)
+    console.log('Error fetching doctors:', err)
+    res.status(500).json({ error: 'Internal server error' })
   }
-
 })
 
 module.exports = router
