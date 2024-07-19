@@ -23,8 +23,7 @@ This documentation covers all the endpoints, request and response, and other tec
 ## Technical requirements
 - Programming Language: Javascript
 - Enviroment and server: Node/Express
-- Database managment: mySQL
-- Security and authentication: bcryptjs/jsonwebtoken
+- Database managment: postgreSQL
 - Containerize App: Docker
 
 ## Base Url
