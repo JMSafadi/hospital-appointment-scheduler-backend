@@ -8,11 +8,10 @@ services:
       - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    # volumes:
-      # - db-data:/var/lib/mysql
-      # - ./sql/create_doctors.sql:/docker-entrypoint-initdb.d/create_doctors.sql
 
   app:
     build:
@@ -24,22 +23,15 @@ services:
       - DB_PASS=${DB_PASS}
       - DB_HOST=${DB_HOST}
       - DB_DIALECT=${DB_DIALECT}
-      - DB_PORT=5432
+      - DB_PORT=${DB_PORT}
     ports:
       - "3000:3000"
+    volumes:
+      - .:/hospital-appointment-scheduler
+      - /hospital-appointment-scheduler/node_modules
     depends_on:
       - db
-    command: npm start
+    command: nodemon app.js
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
-      PGADMIN_DEFAULT_PASSWORD: "admin"
-    ports:
-      - "80:80"
-    depends_on:
-      - db
-
-# volumes:
-#  db-data:
+volumes:
+ db-data:
