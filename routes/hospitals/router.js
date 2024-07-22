@@ -5,6 +5,6 @@ const router = express.Router()
 
 // HTTP Requests
 router.get('/', controller.getHospitals)
-router.get('/:id', controller.getHospitalsById)
+router.get('/:id', controller.getHospitalById)
 
 module.exports = router

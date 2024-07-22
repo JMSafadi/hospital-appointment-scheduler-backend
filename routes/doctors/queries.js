@@ -1,7 +1,7 @@
-const getDoctorsQuery = 'SELECT * FROM Doctors'
-const getDoctorByIdQuery = 'SELECT * FROM Doctors WHERE id = $1'
+const getDoctors = 'SELECT * FROM Doctors'
+const getDoctorById = 'SELECT * FROM Doctors WHERE id = $1'
 
 module.exports = {
-  getDoctorsQuery,
-  getDoctorByIdQuery
+  getDoctors,
+  getDoctorById
 }

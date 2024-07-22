@@ -1,27 +1,33 @@
-const pool = require('../../db/database')
 const queries = require('./queries')
 
 // Method to GET all hospitals from DB
 const getHospitals = async (req, res) => {
+  const pool = req.app.get('pool')
   try {
-    const results = await pool.query(queries.getHospitalsQuery)
+    const client = await pool.connect()
+    const results = await client.query(queries.getHospitals)
+    client.release()
     res.status(200).json(results.rows)
   } catch (err) {
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: 'Internal server error', message: err.message })
   }
 }
 
 // Method to GET one hospital by id from DB
-const getHospitalsById = async (req, res) => {
+const getHospitalById = async (req, res) => {
+  const pool = req.app.get('pool')
   const id = parseInt(req.params.id)
   try {
-    const results = await pool.query(queries.getHospitalsQuery, [id])
+    const client = await pool.connect()
+    const results = await client.query(queries.getHospitalsById, [id])
+    client.release()
+    res.status(200).json(results.rows)
   } catch (err) {
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: 'Internal server error', message: err.message })
   }
 }
 
 module.exports = {
   getHospitals,
-  getHospitalsById
+  getHospitalById
 }
