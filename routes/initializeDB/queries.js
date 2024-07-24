@@ -47,14 +47,14 @@ VALUES
 ('Evergreen Health Hospital', '14570 Alanna Mountains, New Erickaton, ND 66081'),
 ('Harmony Medical Clinic', 'Suite 142 7891 Breitenberg View, Isaiaston, SC 02475-3700'),
 ('Hopewell Medical Center', '3253 Rafael Throughway, Delsieberg, WI 56782-7248')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO Specializations (name, symptoms)
 VALUES
 ('Cardiology', '{"Chest pain", "Shortness of breath"}'),
 ('Neurology', '{"Loss of coordination", "Severe headaches"}'),
 ('Pediatrics', '{"Fever", "Persistent cough"}')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO Doctors (
   name,
@@ -261,6 +261,7 @@ INSERT INTO Doctors (
         "17:00:00"
       ]
     }
-  }', 2);
+  }', 2)
+  ON CONFLICT (name) DO NOTHING;
 `
 module.exports = { initializeDBQuery }

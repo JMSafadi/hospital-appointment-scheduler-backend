@@ -1,15 +1,15 @@
-const getPatientsQuery = 'SELECT * FROM Patients'
-const getPatientsByIdQuery = 'SELECT * FROM Patients WHERE id = $1'
+const getPatients = 'SELECT * FROM Patients'
+const getPatientById = 'SELECT * FROM Patients WHERE id = $1'
 
 const checkEmailExists = 'SELECT p FROM Patients p WHERE p.email = $1'
-const addPatientQuery = 'INSERT INTO Patients (name, email, password) VALUES ($1, $2, $3)'
+const addPatient = 'INSERT INTO Patients (name, email, password) VALUES ($1, $2, $3)'
 
-const deletePatientQuery = 'DELETE FROM Patients WHERE id = $1'
+const deletePatient = 'DELETE FROM Patients WHERE id = $1'
 
 module.exports = {
-  getPatientsQuery,
-  getPatientsByIdQuery,
+  getPatients,
+  getPatientById,
   checkEmailExists,
-  addPatientQuery,
-  deletePatientQuery
+  addPatient,
+  deletePatient
 }
