@@ -1,12 +1,12 @@
 const express = require('express')
 const controller = require('./controller')
+const { authenticateToken } = require('../../middleware/authenticateToken')
 
 const router = express.Router()
 
 // HTTP Requests
-router.get('/', controller.getPatients)
-router.get('/:id', controller.getPatientById)
-// router.post('/', controller.addPatient)
-router.delete('/:id', controller.deletePatient)
+router.get('/', authenticateToken, controller.getPatients)
+router.get('/:id', authenticateToken, controller.getPatientById)
+router.delete('/:id', authenticateToken, controller.deletePatient)
 
 module.exports = router

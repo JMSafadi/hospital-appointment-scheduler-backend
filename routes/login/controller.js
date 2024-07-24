@@ -30,6 +30,7 @@ const loginPatient = async (req, res) => {
       },
       process.env.JWT_SECRET
     )
+    console.log(token)
     client.release()
     res.status(200).json({ message: 'Logged in successfully.', jwt: token })
   } catch (err) {
