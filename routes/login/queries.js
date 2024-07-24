@@ -1,4 +1,4 @@
-const checkEmailExists = 'SELECT p FROM Patients p WHERE p.email = $1'
+const checkEmailExists = 'SELECT * FROM Patients  WHERE email = $1'
 
 module.exports = {
   checkEmailExists,
