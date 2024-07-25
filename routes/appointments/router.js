@@ -1,15 +1,18 @@
 const express = require('express')
 const controller = require('./controller')
-const { authenticateToken } = require('../../middleware/authenticateToken')
+const { authenticateToken } = require('../../middlewares/authenticateToken')
 
 const router = express.Router()
 
 // HTTP requests
 router.get('/', authenticateToken, controller.getAppointments)
-router.get('/:id', authenticateToken, controller.getAppointmentsById)
+router.get('/:id', authenticateToken, controller.getAppointmentById)
 
-router.post('/', (req, res) => {
-  
-})
+router.post('/', authenticateToken, controller.createAppointment)
+
+// TO DOs
+// router.patch('/', authenticateToken, controller.updateAppointment)
+// router.delete('/', authenticateToken, controller.deleteAppointment)
+
 
 module.exports = router

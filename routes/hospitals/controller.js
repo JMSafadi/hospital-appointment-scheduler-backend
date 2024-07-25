@@ -19,7 +19,7 @@ const getHospitalById = async (req, res) => {
   const id = parseInt(req.params.id)
   try {
     const client = await pool.connect()
-    const results = await client.query(queries.getHospitalsById, [id])
+    const results = await client.query(queries.getHospitalById, [id])
     client.release()
     res.status(200).json(results.rows)
   } catch (err) {
