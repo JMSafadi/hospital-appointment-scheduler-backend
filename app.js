@@ -20,18 +20,20 @@ connectDatabase()
 
     const patientsRouter = require('./routes/patients/router')
     const doctorsRouter = require('./routes/doctors/router')
+    const availabilitiesRouter = require('./routes/availabilities/router')
     const appointmentsRouter = require('./routes/appointments/router')
     const hospitalsRouter = require('./routes/hospitals/router')
     const specializationsRouter = require('./routes/specializations/router')
 
     // Config routes
-    app.use('/api/v1/signup', signInRouter)
+    app.use('/api/v1/signin', signInRouter)
     app.use('/api/v1/login', logInRouter)
 
     app.use('/api/v1/', initializeDBRouter)
     
     app.use('/api/v1/patients', patientsRouter)
     app.use('/api/v1/doctors', doctorsRouter)
+    app.use('/api/v1/availabilities', availabilitiesRouter)
     app.use('/api/v1/appointments', appointmentsRouter)
     app.use('/api/v1/hospitals', hospitalsRouter)
     app.use('/api/v1/specializations', specializationsRouter)
