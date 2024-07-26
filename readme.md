@@ -191,7 +191,7 @@ curl -X 'DELETE'
 Response:
 ```
 {
-  message: 'Patient deleted successfully.'
+  "message": 'Patient deleted successfully.'
 }
 ```
 
@@ -261,21 +261,21 @@ curl -X 'GET'
 Response:
 ```
 [
-	{
-		"id": 1,
-		"name": "Evergreen Health Hospital",
-		"location": "14570 Alanna Mountains, New Erickaton, ND 66081"
-	},
-	{
-		"id": 2,
-		"name": "Harmony Medical Clinic",
-		"location": "Suite 142 7891 Breitenberg View, Isaiaston, SC 02475-3700"
-	},
-	{
-		"id": 3,
-		"name": "Hopewell Medical Center",
-		"location": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
-	}
+  {
+    "id": 1,
+    "name": "Evergreen Health Hospital",
+    "location": "14570 Alanna Mountains, New Erickaton, ND 66081"
+  },
+  {
+    "id": 2,
+    "name": "Harmony Medical Clinic",
+    "location": "Suite 142 7891 Breitenberg View, Isaiaston, SC 02475-3700"
+  },
+  {
+    "id": 3,
+    "name": "Hopewell Medical Center",
+    "location": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
+  }
 ]
 ```
 
@@ -375,7 +375,7 @@ curl -X 'POST'
 Response:
 ```
 {
-  message: 'Appointment created successfully.'
+  "message": 'Appointment created successfully.'
 }
 ```
 
@@ -419,21 +419,21 @@ curl -X 'GET'
 Response:
 ```
 [
-	{
-		"id": 1,
-		"name": "Cardiology",
-		"symtomps": "'{"Chest pain", "Shortness of breath"}'"
-	},
-	{
-		"id": 2,
-		"name": "Neurology",
-		"symtomps": "'{"Loss of coordination", "Severe headaches"}'"
-	},
-	{
-		"id": 3,
-		"name": "Pediatrics",
-		"symtomps": "'{"Fever", "Persistent cough"}'"
-	}
+  {
+    "id": 1,
+    "name": "Cardiology",
+    "symtomps": "'{"Chest pain", "Shortness of breath"}'"
+  },
+  {
+    "id": 2,
+    "name": "Neurology",
+    "symtomps": "'{"Loss of coordination", "Severe headaches"}'"
+  },
+  {
+    "id": 3,
+    "name": "Pediatrics",
+    "symtomps": "'{"Fever", "Persistent cough"}'"
+  }
 ]
 ```
 
@@ -479,21 +479,21 @@ curl -X 'GET'
 Response:
 ```
 [
-	{
-		"id": 1,
-		"doctor_id": "Dr. Braden Ashley",
-		"availability_time": "2020-06-22 19:10:25"
-	},
-	{
-		"id": 2,
-		"doctor_id": "Dr. Braden Ashley",
-		"availability_time": "2020-06-22 19:10:25"
-	},
-	{
-		"id": 3,
-		"doctor_id": "Dr. Braden Ashley",
-		"availability_time": "2020-06-22 19:10:25"
-	}
+  {
+    "id": 1,
+    "doctor_id": "Dr. Braden Ashley",
+    "availability_time": "2020-06-22 19:10:25"
+  },
+  {
+    "id": 2,
+    "doctor_id": "Dr. Braden Ashley",
+    "availability_time": "2020-06-22 19:10:25"
+  },
+  {
+    "id": 3,
+    "doctor_id": "Dr. Braden Ashley",
+    "availability_time": "2020-06-22 19:10:25"
+  }
 ]
 ```
 
@@ -522,7 +522,7 @@ Response:
 }
 ```
 
-## Database diagram and relations
+## Database diagram with relations
 [![image.png](https://i.postimg.cc/rwd4WM3s/image.png)](https://postimg.cc/sMr1CdVC)
 
 - Patients entity represents each user registered and can have one, many or none appointments.
