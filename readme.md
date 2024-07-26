@@ -5,20 +5,24 @@
 2. [Technical requirements](#technical-requirements)
 3. [Base URL](#base-url)
 4. [API Documentation](#api-documentation)<br>
-4.1 [Endpoint api/patients](#)<br>
-4.2 [Endpoint api/doctors](#)<br>
-4.3 [Endpoint api/hospitals](#)<br>
-4.4 [Endpoint api/appointments](#)
+4.1 [api/v1/signin](#)<br>
+4.2 [api/v1/login](#)<br>
+4.3 [api/v1/](#)<br>
+4.4 [api/v1/patients](#)<br>
+4.5 [api/v1/doctors](#)<br>
+4.6 [api/v1/hospitals](#)<br>
+4.7 [api/v1/appointments](#)<br>
+4.8 [api/v1/specializations](#)<br>
+4.9 [api/v1/availabilities](#)<br>
 5. [Database Diagram](#database-diagram)
 6. [Install](#install)
 7. [Run](#run)
 
 
 ## Description
-This project is for a hospital appointment scheduling system where users can login as patients and schedule medical appointments. Once the user logs in, they can choose a specialization or symptoms, and the system recommends the closest available appoitments date with a suggested doctor and hospital. Also each patient can see all their appointments scheduled and the corresponding information about it.
+This project is for a hospital appointment scheduling system where users can login as patients and schedule medical appointments. Once the user logs in, they can choose a doctor and availability, and schedule an appointment. Also each patient can see all their appointments scheduled and the corresponding information about it like date, patient, hospital or doctor.
 
 This documentation covers all the endpoints, request and response, and other technical details related to the database and how to integrate and use the API.
-
 
 ## Technical requirements
 - Programming Language: Javascript
@@ -27,17 +31,103 @@ This documentation covers all the endpoints, request and response, and other tec
 - Containerize App: Docker
 
 ## Base Url
-`http://localhost:3000`
+`http://localhost:3000/api/v1`
 
 
 ## API Documentation
 
-### 1. Endpoint `api/patients`:
-#### `GET` - `api/patients`
+### 1. Endpoint `api/v1/signin`:
+#### `POST` - `api/v1/signin`
+Register on app with name, email and password.
+- Status code 201 if user added succesfully.
+- Status code 401 if email already exists.
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'POST'
+'api/v1/signin'
+-d
+{
+  "name": "Julian Safadi"
+  "email": "julianmatiassafadi@gmail.com",
+  "password": "_pass123"
+}
+```
+Response:
+```
+{
+  message: 'Patient added successfully.'
+}
+```
+
+### 2. Endpoint `api/v1/login`:
+#### `POST` - `api/v1/login`
+Log in user.
+- Status code 200 if logged succesfully.
+- Status code 401 if if email or password invalid. 
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'POST'
+'api/patients'
+-d 
+{
+  "email": "julianmatiassafadi@gmail.com",
+  "password": "_pass123"
+}
+```
+Response:
+```
+{
+  message: 'Logged in successfully.', 
+  jwt: token 
+}
+```
+
+### 3. Endpoint `api/v1/`:
+#### `GET` - `api/v1/`
+- Status code 200 if server OK.
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'GET'
+'api/v1/'
+```
+Response:
+```
+{
+" message:" "Welcome to Hospital Appointment Scheduler API"
+}
+```
+
+#### `POST` - `api/v1/` - Initialize database, tables, relations and static data.
+- Status code 200 if db initialize succesfully.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'POST'
+'api/v1/'
+```
+Response:
+```
+{
+  "message": 'Database Initialized succesfully.'
+}
+```
+
+### 4. Endpoint `api/v1/patients`:
+#### `GET` - `api/v1/patients`
 Retrieves a list with all patients.
 - Status code 200 and all patients records.
-- Status code 401 if user is not authenticated. 
-- Status code 404 if requested resource is not found. 
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
 
 Request:
 ```
@@ -46,27 +136,21 @@ curl -X 'GET'
 ```
 Response:
 ```
-[{
-  "id": 1,
-  "name": "string",
-  "email": "string",
-  "password": "string",
-  "age": 20,
-}, {
-  "id": 2,
-  "name": "string",
-  "email": "string",
-  "password": "string",
-  "age": 30,
-}]
+{
+  "id": 1
+  "name": "Julian Safadi",
+  "email": "julianmatiassafadi@gmail.com",
+  "password": "asd123"
+}
 ```
 
-### `GET` - `api/patients/{patient_id}`
+#### `GET` - `api/v1/patients/{patient_id}`
 Retrieves one specific patient by unique id.
 - Status code 200 if id exists and patient record.
-- Status code 400 if query parameters are invalid.
-- Status code 401 if user is not authenticated. 
-- Status code 404 if requested resource is not found.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if id not found.
+- Status code 500 if server error.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -75,52 +159,25 @@ Retrieves one specific patient by unique id.
 Request:
 ```
 curl -X 'GET'
-'api/users/2'
+'api/v1/patients/1'
 ```
 Response:
 ```
 {
-  "id": 2,
-  "name": "string",
-  "email": "string",
-  "password": "string",
-  "age": 30,
+  "id": 1
+  "name": "Julian Safadi",
+  "email": "julianmatiassafadi@gmail.com",
+  "password": "asd123"
 }
 ```
 
-### `POST` - `/api/patients`
-Create new record about a patient in database. The request body must contain some required information to be successful.
-- Status code 201 if resource has been created successfully.
-- Status code 400 and corresponding message if request body does not contain required fields.
-- Status code 409 and corresponding message if request body already exists.
-
-Request:
-```
-curl -X 'POST'
-'api/patients'
--d '{
-  "id": 5,
-  "name": "string",
-  "email": "string",
-  "password": "string",
-  "age": 25,
-}'
-```
-Response:
-```
-{
-  "id": 5,
-  "name": "string",
-  "email": "string",
-  "password": "string",
-  "age": 25,
-}
-```
-
-### `DELETE` - `api/patients/{patient_id}`
+### `DELETE` - `api/v1/patients/{patient_id}`
 Delete patient record by unique id.
-- Status code 200 and message if id found record and deleted.
-- Status code 404 if id not found.
+- Status code 200 if id exists and delete patient.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if patient not exists.
+- Status code 500 if server error.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -129,71 +186,45 @@ Delete patient record by unique id.
 Request:
 ```
 curl -X 'DELETE'
-'api/patients/2'
+'api/V1/patients/4'
 ```
 Response:
 ```
 {
-  "message": "The resource has been deleted successfully."
+  message: 'Patient deleted successfully.'
 }
 ```
 
-### 2. Endpoint `api/doctors`:
-#### `GET` - `api/doctors`
+### 5. Endpoint `api/v1/doctors`:
+#### `GET` - `api/v1/doctors`
 Retrieves a list with all doctors.
 - Status code 200 and all doctors records.
-- Status code 401 if user is not authenticated. 
-- Status code 404 if requested resource is not found. 
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
 
 Request:
 ```
 curl -X 'GET'
-'api/doctors'
+'api/v1/doctors'
 ```
 Response:
 ```
-[{
+{
   "id": 1,
-  "name": "string",
-  "specialization": "string",
-  "start_time": "8:00:00",
-  "end_time": "17:00:00",
-  "availability": {
-    "monday": {
-      availability_time: [
-        '10:00:00',
-        '12:00:00',
-        '14:00:00',
-      ]
-    },
-    "wednesday": {
-      availability_time: [
-        '10:00:00',
-        '12:00:00',
-        '14:00:00',
-      ]
-    },
-    "friday": {
-      availability_time: [
-        '10:00:00',
-        '12:00:00',
-        '14:00:00',
-      ]
-    },
-  },
-  "hospital": {
-    "name":"string",
-    "location": "string"
-  }
-}]
+  "name": "Dr. Braden Ashley",
+  "specialization": "Cardiology",
+  "hospital": "Harmony Medical Clinic"
+}
 ```
 
 #### `GET` - `api/doctors/{doctor_id}`
 Retrieves one specific doctor by unique id.
-- Status code 200 if id exists and doctor record.
-- Status code 400 if query parameters are invalid.
-- Status code 401 if user is not authenticated. 
-- Status code 404 if requested resource is not found.
+- Status code 200 if id exists and one doctor record.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if doctor id not found.
+- Status code 500 if server error.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -202,221 +233,59 @@ Retrieves one specific doctor by unique id.
 Request:
 ```
 curl -X 'GET'
-'api/doctor/1'
+'api/v1/doctors/1'
 ```
 Response:
 ```
 {
   "id": 1,
-  "name": "string",
+  "name": "Dr. Braden Ashley",
   "specialization": "Cardiology",
-  "start_time": "8:00:00",
-  "end_time": "17:00:00",
-  "availability": {
-    "monday": {
-      availability_time: [
-        '10:00:00',
-        '12:00:00',
-        '14:00:00',
-      ]
-    },
-    "wednesday": {
-      availability_time: [
-        '10:00:00',
-        '12:00:00',
-        '14:00:00',
-      ]
-    },
-    "friday": {
-      availability_time: [
-        '10:00:00',
-        '12:00:00',
-        '14:00:00',
-      ]
-    },
-  },
-  "hospital": {
-    "name":"Evergreen Health Hospital",
-    "location": "14570 Alanna Mountains, New Erickaton, ND 66081"
-  }
+  "hospital": "Harmony Medical Clinic"
 }
 ```
 
-### `POST` - `api/doctors`
-Create new record about a doctor in database. The request body must contain some required information to be successful.
-- Status code 201 if resource has been created successfully.
-- Status code 400 and corresponding message if request body does not contain required fields.
-- Status code 409 and corresponding message if request body already exists.
-
-Request:
-```
-curl -X 'POST'
-'api/doctors'
--d '{
-  "name": "string",
-  "specialization": "string",
-  "start_time": '11:00:00',
-  "end_time": '19:00:00',
-  "availability": {
-  "monday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "tuesday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "wednesday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "thursday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "friday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  }
-},
-"hospital": {
-  "name": "string",
-  "location": "string"
-  }
-}'
-```
-Response:
-```
-{
-  "name": "string",
-  "specialization": "string",
-  "start_time": '11:00:00',
-  "end_time": '19:00:00',
-  "availability": {
-  "monday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "tuesday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "wednesday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "thursday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  },
-  "friday": {
-    "availability_time": [
-      '11:00:00',
-      '13:00:00',
-      '15:00:00',
-      '17:00:00',
-    ]
-  }
-},
-"hospital": {
-  "name": "string",
-  "location": "string"
-  }
-}
-```
-
-### `DELETE` - `api/doctors/{doctor_id}`
-Delete doctor record by unique id.
-- Status code 200 and message if id found record and deleted.
-- Status code 404 if id not found.
-
-| Parameter | Type | Required | Description |
-| --- | --- | --- | --- |
-| doctor_id | integer | Yes | Unique ID to delete a doctor. |
-
-Request:
-```
-curl -X 'DELETE'
-'api/doctors/2'
-```
-Response:
-```
-{
-  "message": "The resource has been deleted successfully."
-}
-```
-
-#### 3. Endpoint `api/hospitals`:
-#### `GET` - `api/hospitals`
+### 6. Endpoint `api/v1/hospitals`:
+#### `GET` - `api/v1/hospitals`
 Retrieves a list with all hospitals.
 - Status code 200 and all hospitals records.
-- Status code 401 if user is not authenticated. 
-- Status code 404 if requested resource is not found.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
 
 Request:
 ```
 curl -X 'GET'
-'api/hospitals'
+'api/v1/hospitals'
 ```
 Response:
 ```
-[{
-  "id": 1
-  "name": "Harmony Medical Clinic",
-  "location": "Suite 142 7891 Breitenberg View, Isaiaston, SC 02475-3700"
-}, {
-  "id": 2
-  "name": "Evergreen Health Hospital",
-  "location": "14570 Alanna Mountains, New Erickaton, ND 66081"
-}, {
-  "id": 3
-  "name": "Hopewell Medical Center",
-  "location": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
-}]
+[
+	{
+		"id": 1,
+		"name": "Evergreen Health Hospital",
+		"location": "14570 Alanna Mountains, New Erickaton, ND 66081"
+	},
+	{
+		"id": 2,
+		"name": "Harmony Medical Clinic",
+		"location": "Suite 142 7891 Breitenberg View, Isaiaston, SC 02475-3700"
+	},
+	{
+		"id": 3,
+		"name": "Hopewell Medical Center",
+		"location": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
+	}
+]
 ```
 
-#### `GET` - `api/hospitals/{hospital_id}`
+#### `GET` - `api/v1/hospitals/{hospital_id}`
 Retrieves one specific hospital by unique id.
 - Status code 200 if id exists and hospital record.
-- Status code 400 if query parameters are invalid.
-- Status code 401 if user is not authenticated. 
-- Status code 404 if requested resource is not found.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if hospital id not found.
+- Status code 500 if server error.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -424,113 +293,99 @@ Retrieves one specific hospital by unique id.
 
 ```
 curl -X 'GET'
-'api/hospitals/3'
+'api/v1/hospitals/3'
 ```
 Response:
 ```
 {
-  "id": 3
+  "id": 3,
   "name": "Hopewell Medical Center",
   "location": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
 }
 ```
 
-#### 4. Endpoint `api/appointments`:
-### `GET` - `api/appointments`
-Retrieves a list of all appointments.
+### 7. Endpoint `api/v1/appointments`:
+#### `GET` - `api/v1/appointments`
+Retrieves a list with all appointments.
 - Status code 200 and all appointments records.
-- Status code 401 if user is not authenticated. 
-- Status code 404 if requested resource is not found.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
 
 Request:
 ```
 curl -X 'GET'
-'api/appointments'
+'api/v1/appointments'
 ```
 Response:
 ```
 [{
-  "id": 1,
-  "patientId": 2,
-  "hospital": "string",
-  "doctorId": 4,
-  "appointment_date": "Tue Jun 11 2024 13:21:08",
-  "start_time": "08:00:00",
-  "end_time": "10:00:00"
-}, {
-  "id": 2,
-  "patientId": 1,
-  "hospital": "string",
-  "doctorId": 3,
-  "appointment_date": "Tue Jun 11 2024 13:21:08",
-  "start_time": "08:00:00",
-  "end_time": "10:00:00"
+  "appointment_date": "2024-07-05 10:00:00.000",
+  "patient_id": "Julian Safadi",
+  "hospital_id": "Hopewell Medical Center",
+  "doctor_id": ""Dr. Braden Ashley"",
 }]
 ```
 
-### `GET` - `api/appointments/{appointment_id}`
+### `GET` - `api/v1/appointments/{appointment_id}`
 Retrieves one specific appointment by unique id.
 - Status code 200 if id exists and appointment record.
 - Status code 400 if query parameters are invalid.
-- Status code 401 if user is not authenticated. 
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
 - Status code 404 if requested resource is not found.
+- Status code 500 if server error.
 
 Request:
 ```
 curl -X 'GET'
-'api/appointments/2'
+'api/v1/appointments/2'
 ```
 Response:
 ```
 {
   "id": 2,
-  "patientId": 1,
-  "hospital": "string",
-  "doctorId": 3,
-  "appointment_date": "Tue Jun 11 2024 13:21:08",
-  "start_time": "08:00:00",
-  "end_time": "10:00:00"
+  "appointment_date": "2024-07-05 10:00:00.000",
+  "patient": "Julian Safadi",
+  "hospital": "Hopewell Medical Center",
+  "doctor": ""Dr. Braden Ashley"",
 }
 ```
 
-### `POST` - `api/appointments`
+### `POST` - `api/v1/appointments`
 Create new record about an appointment in database. The request body must contain some required information to be successful.
-- Status code 201 if resource has been created successfully.
-- Status code 400 and corresponding message if request body does not contain required fields.
-- Status code 409 and corresponding message if request body already exists.
+- Status code 201 if appointment has been created successfully.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if some requested resource is not found.
+- Status code 500 if server error.
 
 Request:
 ```
 curl -X 'POST'
-'api/appointments'
+'api/v1/appointments'
 -d '{
-  "id": 2,
-  "patientId": 1,
-  "hospital": "string",
-  "doctorId": 3,
-  "appointment_date": "Tue Jun 11 2024 13:21:08",
-  "start_time": "08:00:00",
-  "end_time": "10:00:00"
+  "id": 1,
+  "appointment_date": "2024-07-05 10:00:00.000",
+  "patient": "Julian Safadi",
+  "hospital": "Hopewell Medical Center",
+  "doctor": ""Dr. Braden Ashley"",
 }'
 ```
 Response:
 ```
 {
-  "id": 2,
-  "patientId": 1,
-  "hospital": "string",
-  "doctorId": 3,
-  "appointment_date": "Tue Jun 11 2024 13:21:08",
-  "start_time": "08:00:00",
-  "end_time": "10:00:00"
+  message: 'Appointment created successfully.'
 }
 ```
 
-### `DELETE` - `api/appointments/{appointment_id}`
+### `DELETE` - `api/v1/appointments/{appointment_id}`
 Delete appointment record by unique id.
-- Status code 200 and message if id found record and deleted.
-- Status code  if id found and record deleted but has no response.
-- Status code 404 if id not found.
+- Status code 200 if id exists and delete appointment.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if appointment not exists.
+- Status code 500 if server error.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -539,27 +394,143 @@ Delete appointment record by unique id.
 Request:
 ```
 curl -X 'DELETE'
-'api/appointments/2'
+'api/v1/appointments/2'
 ```
 Response:
 ```
 {
-  "message": "The resource has been deleted successfully."
+  "message": "The appointment has been deleted successfully."
 }
 ```
 
-#### 5. Endpoint `api/specializations`:
+### 8. Endpoint `api/v1/specializations`:
+#### `GET` - `api/v1/specializations`
+Retrieves a list with all specializations.
+- Status code 200 and all specializations records.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'GET'
+'api/v1/specializations'
+```
+Response:
+```
+[
+	{
+		"id": 1,
+		"name": "Cardiology",
+		"symtomps": "'{"Chest pain", "Shortness of breath"}'"
+	},
+	{
+		"id": 2,
+		"name": "Neurology",
+		"symtomps": "'{"Loss of coordination", "Severe headaches"}'"
+	},
+	{
+		"id": 3,
+		"name": "Pediatrics",
+		"symtomps": "'{"Fever", "Persistent cough"}'"
+	}
+]
+```
+
+#### `GET` - `api/v1/specializations/{specialization_id}`
+Retrieves one specific specialization by unique id.
+- Status code 200 if id exists and specialization record.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if specialization id not found.
+- Status code 500 if server error.
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| specialization_id | integer | Yes | Unique ID to search for a doctor. |
+
+```
+curl -X 'GET'
+'api/v1/specializations/3'
+```
+Response:
+```
+{
+  "id": 3,
+  "name": "Pediatrics",
+  "symtomps": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
+}
+```
 
 
+### 9. Endpoint `api/v1/availabilities`:
+#### `GET` - `api/v1/availabilities`
+Retrieves a list with all availabilities.
+- Status code 200 and all availabilities records.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'GET'
+'api/v1/availabilities'
+```
+Response:
+```
+[
+	{
+		"id": 1,
+		"doctor_id": "Dr. Braden Ashley",
+		"availability_time": "2020-06-22 19:10:25"
+	},
+	{
+		"id": 2,
+		"doctor_id": "Dr. Braden Ashley",
+		"availability_time": "2020-06-22 19:10:25"
+	},
+	{
+		"id": 3,
+		"doctor_id": "Dr. Braden Ashley",
+		"availability_time": "2020-06-22 19:10:25"
+	}
+]
+```
+
+#### `GET` - `api/v1/availabilities/{availability_id}`
+Retrieves one specific availability by unique id.
+- Status code 200 if id exists and availability record.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if availability id not found.
+- Status code 500 if server error.
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| availability_id | integer | Yes | Unique ID to search for a doctor. |
+
+```
+curl -X 'GET'
+'api/v1/availabilities/2'
+```
+Response:
+```
+{
+  "id": 2,
+  "doctor_id": "Dr. Braden Ashley",
+  "availability_time": "2020-06-22 19:10:25"
+}
+```
 
 ## Database diagram and relations
-[![image.png](https://i.postimg.cc/ncYbMDY2/image.png)](https://postimg.cc/GH2S59fT)
+[![image.png](https://i.postimg.cc/rwd4WM3s/image.png)](https://postimg.cc/sMr1CdVC)
 
 - Patients entity represents each user registered and can have one, many or none appointments.
 - Doctors entity represents each doctor, and they can have one specialization and one hospital where they work.
 - Hospitals entity represents each hospital with name and location, and has no foreing keys.
-- Specializations entity represent each specialization. Can have many doctors who practice it and the respective symptoms it can treat.
-- Appointments entity represents each appointment generated by users, and should have one patient, one hospital and one doctor. Also the date and start time depending on Doctor availability.
+- Specializations entity represent each specialization. Has only name and symptoms, and no foreing keys.
+- Availabilities entity represents each availability and has one, many or none doctors as foreing keys.
+- Appointments entity represents each appointment generated by patient, and should have one patient, one hospital, one doctor and one availability (appointment date time).
 
 ## Install
 To install application in local.
@@ -576,15 +547,21 @@ cd .\hospital-appointment-scheduler-backend
 npm install
 ```
 
-## Run with Docker container
+## Run with Docker containers
 To run application with Docker you must have Docker installed in your machine.<br>
 [Download Docker](https://www.docker.com/products/docker-desktop/)
 
-Run app:
+Create containers and run app:
 ```
-docker compose up
+docker-compose up --build
 ```
-Stop app:
+
+Stop running app:
 ```
-docker compose down
+docker-compose stop
+```
+
+Delete containers and volumes:
+```
+docker-compose down -v
 ```
