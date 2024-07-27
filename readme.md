@@ -140,7 +140,7 @@ Response:
   "id": 1
   "name": "Julian Safadi",
   "email": "julianmatiassafadi@gmail.com",
-  "password": "asd123"
+  "password": "_pass123"
 }
 ```
 
@@ -167,7 +167,7 @@ Response:
   "id": 1
   "name": "Julian Safadi",
   "email": "julianmatiassafadi@gmail.com",
-  "password": "asd123"
+  "password": "_pass123"
 }
 ```
 
