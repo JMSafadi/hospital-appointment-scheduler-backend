@@ -1,4 +1,4 @@
-# Hospital Appointmnet Scheduler
+# Hospital Appointment Scheduler
 
 ## Content
 1. [Description](#description)
