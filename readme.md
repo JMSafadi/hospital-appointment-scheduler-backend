@@ -20,7 +20,7 @@
 
 
 ## Description
-This project is for a hospital appointment scheduling system where users can login as patients and schedule medical appointments. Once the user logs in, they can choose a doctor and availability, and schedule an appointment. Also each patient can see all their appointments scheduled and the corresponding information about it like date, patient, hospital or doctor.
+API for hospital appointment scheduling application where users can login as patients and schedule medical appointments. Once the user logs in, they can choose a doctor and availability, and schedule an appointment. Also each patient can see all their appointments scheduled and the corresponding information about it like date, patient, hospital or doctor.
 
 This documentation covers all the endpoints, request and response, and other technical details related to the database and how to integrate and use the API.
 
