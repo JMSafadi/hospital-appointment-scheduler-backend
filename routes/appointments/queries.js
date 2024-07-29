@@ -1,15 +1,63 @@
-const getAppointments = 'SELECT * FROM Appointments;'
-const getAppointmentById = 'SELECT * FROM Appointments WHERE id = $1;'
+const getAppointments = `
+SELECT
+  appointments.id ,
+  patients.name AS patient,
+  availabilities.availability_time AS date,
+  hospitals.name AS hospital,
+  doctors.name AS doctor
+FROM Appointments
+JOIN Patients ON appointments.patient_id = patients.id
+JOIN Availabilities ON appointments.availability_id = availabilities.id
+JOIN Hospitals ON appointments.hospital_id = hospitals.id
+JOIN Doctors ON appointments.doctor_id = doctors.id;
+`
 
-const checkPatientExists = 'SELECT 1 FROM Patients WHERE id = $1;'
-const checkHospitalExists = 'SELECT 1 FROM Hospitals WHERE id = $1;'
-const checkDoctorExists = 'SELECT 1 FROM Doctors WHERE id = $1;'
+const getAppointmentById = `
+SELECT
+  appointments.id ,
+  patients.name AS patient,
+  availabilities.availability_time AS date,
+  hospitals.name AS hospital,
+  doctors.name AS doctor
+FROM Appointments
+JOIN Patients ON appointments.patient_id = patients.id
+JOIN Availabilities ON appointments.availability_id = availabilities.id
+JOIN Hospitals ON appointments.hospital_id = hospitals.id
+JOIN Doctors ON appointments.doctor_id = doctors.id
+WHERE appointments.id = $1;
+`
 
-const checkDoctorAvailability = 'SELECT 1 FROM Availabilities WHERE doctor_id = $1 AND availability_time = $2;'
+const checkPatientExists = 'SELECT id FROM Patients WHERE name = $1;'
+const checkHospitalExists = 'SELECT id FROM Hospitals WHERE name = $1;'
+const checkDoctorExists = 'SELECT id FROM Doctors WHERE name = $1;'
 
-const createAppointment = 'INSERT INTO Appointments (appointment_date, patient_id, hospital_id, doctor_id) VALUES ($1, $2, $3, $4);'
+const checkDoctorAvailability = `
+SELECT id
+FROM Availabilities 
+WHERE 
+  doctor_id = (SELECT id FROM Doctors WHERE name = $1)
+AND 
+  availability_time = $2
+AND
+  is_available = TRUE;
+`
 
-const deleteDoctorAvailability = 'DELETE FROM Availabilities WHERE doctor_id = $1 AND availability_time = $2;'
+const createAppointment = `
+INSERT INTO Appointments (availability_id, patient_id, hospital_id, doctor_id) 
+VALUES (
+  $1,
+  (SELECT id FROM Patients WHERE name = $2),
+  (SELECT id FROM Hospitals WHERE name = $3),
+  (SELECT id FROM Doctors WHERE name = $4)
+);`
+
+const updateAvailability = `
+UPDATE Availabilities 
+SET is_available = FALSE 
+WHERE 
+  doctor_id = (SELECT id FROM Doctors WHERE name = $1) 
+AND availability_time = $2;
+`
 
 module.exports = {
   getAppointments,
@@ -19,5 +67,5 @@ module.exports = {
   checkDoctorExists,
   checkDoctorAvailability,
   createAppointment,
-  deleteDoctorAvailability
+  updateAvailability
 }
