@@ -9,6 +9,8 @@ router.get('/', (req, res) => {
   res.send({ message: 'Welcome to Hospital Appointment Scheduler API.' })
 })
 
-router.post('/', authenticateToken, controller.initializeDb)
+router.post('/', controller.initializeDb)
+
+router.delete('/', authenticateToken, controller.deleteAll)
 
 module.exports = router
