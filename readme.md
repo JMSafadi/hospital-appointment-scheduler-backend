@@ -37,7 +37,7 @@ This documentation covers all the endpoints, request and response, and other tec
 
 
 ## Database diagram with relations
-[![image.png](https://i.postimg.cc/rwd4WM3s/image.png)](https://postimg.cc/sMr1CdVC)
+[![image.png](https://i.postimg.cc/vm4y2ch9/image.png)](https://postimg.cc/VSP2ds3L)
 
 - Patients entity represents each user registered and can have one, many or none appointments.
 - Doctors entity represents each doctor, and they can have one specialization and one hospital where they work.
