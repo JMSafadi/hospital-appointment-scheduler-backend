@@ -20,6 +20,9 @@ const getPatientById = async (req, res) => {
   try {
     const client = await pool.connect()
     const result = await client.query(queries.getPatientById, [id])
+    if (!result.rows.length) {
+      return res.status(404).json({ message: 'ID not found.'} )
+    }
     client.release()
     res.status(200).json(result.rows)
   } catch (err) {
@@ -32,8 +35,8 @@ const deletePatient = async (req, res) => {
   const id = parseInt(req.params.id)
   try {
     const client = await pool.connect()
-    const results = await client.query(queries.getPatientById, [id])
-    if (!results.rows.length) {
+    const result = await client.query(queries.getPatientById, [id])
+    if (!result.rows.length) {
       return res.status(404).json({ message: 'Patient not exists. Can\'t be removed'} )
     }
     await client.query(queries.deletePatient, [id])

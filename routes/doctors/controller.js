@@ -20,6 +20,9 @@ const getDoctorById = async (req, res) => {
   try {
     const client = await pool.connect()
     const results = await client.query(queries.getDoctorById, [id])
+    if (!results.rows.length) {
+      return res.status(404).json({ message: 'ID doctor not found.'} )
+    }
     client.release()
     res.status(200).json(results.rows)
   } catch (err) {

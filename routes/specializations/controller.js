@@ -19,6 +19,9 @@ const getSpecializationById = async (req, res) => {
   try {
     const client = await pool.connect()
     const results = await client.query(queries.getSpecializationById, [id])
+    if (!results.rows.length) {
+      return res.status(404).json({ message: 'ID specialization not found.'} )
+    }
     res.status(200).json(results.rows)
   } catch (err) {
     res.status(500).json({ error: 'Internal server error', message: err.message })
