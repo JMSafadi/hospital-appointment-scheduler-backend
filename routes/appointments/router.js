@@ -10,10 +10,6 @@ router.get('/:id', authenticateToken, controller.getAppointmentById)
 
 router.post('/', authenticateToken, controller.createAppointment)
 
-// TO DOs
-// router.delete('/', authenticateToken, controller.deleteAppointment)
-// router.patch('/', authenticateToken, controller.updateAppointment)
-// router.delete('/', authenticateToken, controller.deleteAppointment)
-
+router.delete('/:id', authenticateToken, controller.deleteAppointmentById)
 
 module.exports = router

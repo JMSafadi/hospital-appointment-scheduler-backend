@@ -65,7 +65,8 @@ const createAppointment = async (req, res) => {
     client.release()
     res.status(201).json({ 
       "message": `Appointment created succesfully for ${patient}`, 
-      "date": `${availability}`,
+      // "date": `${availability}`,
+      "date": `${new Date(availability).toISOString().replace('T', ' ').slice(0, 19)}`,
       "hospital": `${hospital}`,
       "doctor": `${doctor}`
     })
@@ -76,8 +77,40 @@ const createAppointment = async (req, res) => {
   }
 }
 
+const deleteAppointmentById = async (req, res) => {
+  const pool = req.app.get('pool')
+  const id = parseInt(req.params.id)
+  try {
+    const client = await pool.connect()
+    await client.query('BEGIN;')
+    // Check if appointment exists
+    const results = await client.query(queries.getAppointmentById, [id])
+    if (!results.rows.length) {
+      await client.query('ROLLBACK;')
+      client.release()
+      return res.status(404).json({ message: 'ID appointment not found.'} )
+    }
+    // Get availability
+    const availabilityId = results.rows[0].availability_id
+    // Delete appointment
+    await client.query(queries.deleteAppointmentById, [id])
+    // Update availability
+    await client.query('UPDATE Availabilities SET is_available = TRUE WHERE ID = $1;', [availabilityId])
+
+    await client.query('COMMIT;')
+    client.release()
+    res.status(200).json({ message: `Appointment (${id}) deleted sucessfully.` })
+  } catch (err) {
+    await client.query('ROLLBACK;')
+    client.relase()
+    res.status(500).json({ error: "Internal server error", message: err.message })
+
+  }
+}
+
 module.exports = {
   getAppointments,
   getAppointmentById,
-  createAppointment
+  createAppointment,
+  deleteAppointmentById
 }

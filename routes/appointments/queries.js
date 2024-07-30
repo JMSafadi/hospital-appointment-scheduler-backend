@@ -18,7 +18,8 @@ SELECT
   patients.name AS patient,
   availabilities.availability_time AS date,
   hospitals.name AS hospital,
-  doctors.name AS doctor
+  doctors.name AS doctor,
+  appointments.availability_id
 FROM Appointments
 JOIN Patients ON appointments.patient_id = patients.id
 JOIN Availabilities ON appointments.availability_id = availabilities.id
@@ -59,6 +60,8 @@ WHERE
 AND availability_time = $2;
 `
 
+const deleteAppointmentById = 'DELETE FROM Appointments WHERE id = $1;'
+
 module.exports = {
   getAppointments,
   getAppointmentById,
@@ -67,5 +70,6 @@ module.exports = {
   checkDoctorExists,
   checkDoctorAvailability,
   createAppointment,
-  updateAvailability
+  updateAvailability,
+  deleteAppointmentById
 }
