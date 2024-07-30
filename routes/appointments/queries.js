@@ -2,7 +2,7 @@ const getAppointments = `
 SELECT
   appointments.id ,
   patients.name AS patient,
-  availabilities.availability_time AS date,
+  to_char(availabilities.availability_time, 'YYYY-MM-DD HH24:MI:SS') AS date,
   hospitals.name AS hospital,
   doctors.name AS doctor
 FROM Appointments
@@ -16,7 +16,7 @@ const getAppointmentById = `
 SELECT
   appointments.id ,
   patients.name AS patient,
-  availabilities.availability_time AS date,
+  to_char(availabilities.availability_time, 'YYYY-MM-DD HH24:MI:SS') AS date,
   hospitals.name AS hospital,
   doctors.name AS doctor,
   appointments.availability_id

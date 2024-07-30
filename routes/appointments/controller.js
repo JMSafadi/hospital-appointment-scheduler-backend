@@ -66,7 +66,8 @@ const createAppointment = async (req, res) => {
     res.status(201).json({ 
       "message": `Appointment created succesfully for ${patient}`, 
       // "date": `${availability}`,
-      "date": `${new Date(availability).toISOString().replace('T', ' ').slice(0, 19)}`,
+      // "date": `${new Date(availability).toISOString().replace('T', ' ').slice(0, 19)}`,
+      "date": `${availability}`,
       "hospital": `${hospital}`,
       "doctor": `${doctor}`
     })
