@@ -99,7 +99,7 @@ const deleteAppointmentById = async (req, res) => {
 
     await client.query('COMMIT;')
     client.release()
-    res.status(200).json({ message: `Appointment (${id}) deleted sucessfully.` })
+    res.status(200).json({ message: "The appointment has been deleted successfully." })
   } catch (err) {
     await client.query('ROLLBACK;')
     client.relase()
