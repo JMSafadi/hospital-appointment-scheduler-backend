@@ -365,7 +365,7 @@ curl -X 'GET'
 Response:
 ```
 [{
-  "appointment_date": "2024-07-05 10:00:00.000",
+  "appointment_date": "2024-07-05 10:00:00",
   "patient": "Julian Safadi",
   "hospital": "Hopewell Medical Center",
   "doctor": ""Dr. Braden Ashley"",
@@ -390,10 +390,10 @@ Response:
 ```
 {
   "id": 2,
-  "appointment_date": "2024-07-05 10:00:00.000",
+  "appointment_date": "2024-07-05 10:00:00",
   "patient": "Julian Safadi",
   "hospital": "Hopewell Medical Center",
-  "doctor": ""Dr. Braden Ashley"",
+  "doctor": "Dr. Braden Ashley",
 }
 ```
 
@@ -409,18 +409,18 @@ Request:
 ```
 curl -X 'POST'
 'api/v1/appointments'
--d '{
-  "id": 1,
-  "appointment_date": "2024-07-05 10:00:00.000",
-  "patient": "Julian Safadi",
-  "hospital": "Hopewell Medical Center",
-  "doctor": ""Dr. Braden Ashley"",
+-d 
+'{
+  "symptoms": ["Chest pain", "Shortness of breath"],
+  "specialization": "Cardiology"
 }'
 ```
 Response:
 ```
 {
-  "message": "Appointment created successfully."
+  "doctor": "Dr. Braden Ashley",
+  "availability_time": "2024-08-10 12:00:00",
+  "hospital": "Harmony Medical Clinic"
 }
 ```
 
@@ -503,7 +503,7 @@ Response:
 {
   "id": 3,
   "name": "Pediatrics",
-  "symtomps": "3253 Rafael Throughway, Delsieberg, WI 56782-7248"
+  "symtomps": "'{"Fever", "Persistent cough"}'"
 }
 ```
 

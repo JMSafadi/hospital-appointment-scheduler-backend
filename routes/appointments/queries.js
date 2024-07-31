@@ -29,8 +29,29 @@ WHERE appointments.id = $1;
 `
 
 const checkPatientExists = 'SELECT id FROM Patients WHERE name = $1;'
-const checkHospitalExists = 'SELECT id FROM Hospitals WHERE name = $1;'
-const checkDoctorExists = 'SELECT id FROM Doctors WHERE name = $1;'
+
+const getDoctorBySpecialization = `
+SELECT d.id, d.name
+FROM Doctors d
+JOIN Specializations s ON d.specialization_id = s.id
+WHERE s.name = $1;
+`
+
+const getNearestAvailability = `
+SELECT
+  a.id,
+  a.availability_time,
+  a.doctor_id,
+  d.name as doctor_name,
+  d.hospital_id,
+  h.name as hospital_name
+FROM Availabilities a
+JOIN Doctors d ON a.doctor_id = d.id
+JOIN Hospitals h ON d.hospital_id = h.id
+WHERE a.doctor_id = $1 AND a.is_available = TRUE
+ORDER BY a.availability_time ASC
+LIMIT 1;
+`
 
 const checkDoctorAvailability = `
 SELECT id
@@ -55,9 +76,7 @@ VALUES (
 const updateAvailability = `
 UPDATE Availabilities 
 SET is_available = FALSE 
-WHERE 
-  doctor_id = (SELECT id FROM Doctors WHERE name = $1) 
-AND availability_time = $2;
+WHERE id = $1
 `
 
 const deleteAppointmentById = 'DELETE FROM Appointments WHERE id = $1;'
@@ -66,8 +85,8 @@ module.exports = {
   getAppointments,
   getAppointmentById,
   checkPatientExists,
-  checkHospitalExists,
-  checkDoctorExists,
+  getDoctorBySpecialization,
+  getNearestAvailability,
   checkDoctorAvailability,
   createAppointment,
   updateAvailability,

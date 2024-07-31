@@ -1,4 +1,5 @@
 const queries = require('./queries')
+const jwt = require('../../lib/jwt')
 
 // Method to GET all appointments from DB
 const getAppointments = async (req, res) => {
@@ -30,46 +31,69 @@ const getAppointmentById = async (req, res) => {
 
 // Method to set a new appointment by user
 const createAppointment = async (req, res) => {
+  const { symptoms, specialization } = req.body
   const pool = req.app.get('pool')
   const client = await pool.connect()
+
+  // Extrat patient name with JWT
+  const token = req.header('x-auth-token')
+  let patient
   try {
-    const { availability, patient, hospital, doctor } = req.body
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    patient = decoded.name
+  } catch (err) {
+    res.status(401).json({ message: 'Unauthorized: Invalid Token' })
+  }
+
+  try {
     await client.query('BEGIN;')
 
     // Check if patient, hospital and doctor exists
-    const [patientResult, hospitalResult, doctorResult] = await Promise.all([
-      client.query(queries.checkPatientExists, [patient]),
-      client.query(queries.checkHospitalExists, [hospital]),
-      client.query(queries.checkDoctorExists, [doctor])
-    ])
+    const patientResult = await client.query(queries.checkPatientExists, [patient])
+    console.log(patient)
 
-    if (!patientResult.rows.length || !hospitalResult.rows.length || !doctorResult.rows.length) {
+    if (!patientResult.rows.length) {
       await client.query('ROLLBACK;')
-      return res.status(404).json({ message: 'Patient, hospital or doctor not found.' })
+      return res.status(404).json({ message: 'Patient not found.' })
     }
+    const patientId = patientResult.rows[0].id
 
-    // Check doctor availability
-    const availabilityResult  = await client.query(queries.checkDoctorAvailability, [doctor, availability])
-    if (!availabilityResult .rows.length) {
+
+    // Get doctor with requested specialization
+    const doctorResult = await client.query(queries.getDoctorBySpecialization, [specialization])
+    if (!doctorResult.rows.length) {
       await client.query('ROLLBACK;')
-      return res.status(404).json({ message: 'Doctor is not available at requested date.' })
+      return res.status(404).json({ message: 'No doctor found for the selected specialization.' })
     }
-    const availabilityId = availabilityResult.rows[0].id
+    const doctorId = doctorResult.rows[0].id
 
-    // Add appointment to table in database
-    await client.query(queries.createAppointment, [availabilityId, patient, hospital, doctor])
+    // Find the nearest availability
+    const availabilityResult = await client.query(queries.getNearestAvailability, [doctorId])
+    if (!availabilityResult.rows.length) {
+      await client.query('ROLLBACK;')
+      return res.status(404).json({ message: 'No available appointments for the selected specialization.' })
+    }
+    const availability = availabilityResult.rows[0]
+    console.log(availability)
+
+    const availabilityId = availability.id
+    const doctor = availability.doctor_name
+    const availabilityTime = availability.availability_time
+    const hospitalId = availability.hospital_name
+
+    // // Add appointment to table in database
+    await client.query(queries.createAppointment, [availabilityId, patient, hospitalId, doctor])
     // Update availability
-    await client.query(queries.updateAvailability, [doctor, availability])
+    await client.query(queries.updateAvailability, [availabilityId])
+
 
     await client.query('COMMIT;')
     client.release()
     res.status(201).json({ 
-      "message": `Appointment created succesfully for ${patient}`, 
-      // "date": `${availability}`,
-      // "date": `${new Date(availability).toISOString().replace('T', ' ').slice(0, 19)}`,
-      "date": `${availability}`,
-      "hospital": `${hospital}`,
-      "doctor": `${doctor}`
+      message: `Appointment created succesfully for ${patient}`, 
+      date: availability.availability_time,
+      hospital: availability.hospital_name,
+      doctor: availability.doctor_name
     })
   } catch (err) {
     await client.query('ROLLBACK')
