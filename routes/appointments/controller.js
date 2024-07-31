@@ -58,12 +58,17 @@ const createAppointment = async (req, res) => {
     }
     const patientId = patientResult.rows[0].id
 
-
-    // Get doctor with requested specialization
-    const doctorResult = await client.query(queries.getDoctorBySpecialization, [specialization])
-    if (!doctorResult.rows.length) {
+    // Get doctor with requested specialization or symptoms
+    let doctorResult
+    if (specialization) {
+      doctorResult = await client.query(queries.getDoctorBySpecialization, [specialization])
+    } else if (symptoms) {
+      // Format symtpms array for Postgres
+      doctorResult = await client.query(queries.getDoctorBySymptom, [symptoms])
+    }
+    if (!doctorResult || !doctorResult.rows.length) {
       await client.query('ROLLBACK;')
-      return res.status(404).json({ message: 'No doctor found for the selected specialization.' })
+      return res.status(404).json({ message: 'No doctor found for the selected specialization or symptoms.' })
     }
     const doctorId = doctorResult.rows[0].id
 
@@ -76,21 +81,15 @@ const createAppointment = async (req, res) => {
     const availability = availabilityResult.rows[0]
     console.log(availability)
 
-    const availabilityId = availability.id
-    const doctor = availability.doctor_name
-    const availabilityTime = availability.availability_time
-    const hospitalId = availability.hospital_name
-
     // // Add appointment to table in database
-    await client.query(queries.createAppointment, [availabilityId, patient, hospitalId, doctor])
+    await client.query(queries.createAppointment, [availability.id, patientId, availability.hospital_id, doctorId])
     // Update availability
-    await client.query(queries.updateAvailability, [availabilityId])
-
+    await client.query(queries.updateAvailability, [availability.id])
 
     await client.query('COMMIT;')
     client.release()
     res.status(201).json({ 
-      message: `Appointment created succesfully for ${patient}`, 
+      message: `Appointment created succesfully for patient ${patient}`, 
       date: availability.availability_time,
       hospital: availability.hospital_name,
       doctor: availability.doctor_name
