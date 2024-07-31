@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS Doctors (
   name TEXT NOT NULL,
   specialization_id INTEGER NOT NULL,
   hospital_id INTEGER NOT NULL,
+  patient_load INTEGER DEFAULT 0,
   CONSTRAINT fk_doctors_specializations FOREIGN KEY (specialization_id) REFERENCES Specializations(id),
   CONSTRAINT fk_doctors_hospitals FOREIGN KEY (hospital_id) REFERENCES Hospitals(id),
   CONSTRAINT unique_doctor UNIQUE (name, specialization_id, hospital_id)

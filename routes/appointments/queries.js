@@ -34,14 +34,18 @@ const getDoctorBySpecialization = `
 SELECT d.id, d.name
 FROM Doctors d
 JOIN Specializations s ON d.specialization_id = s.id
-WHERE s.name = $1;
+WHERE s.name = $1
+ORDER BY d.patient_load ASC
+LIMIT 1;;
 `
 
 const getDoctorBySymptom = `
 SELECT DISTINCT d.id, d.name
 FROM Doctors d
 JOIN Specializations s ON d.specialization_id  = s.id
-WHERE $1 && s.symptoms;
+WHERE $1 && s.symptoms
+ORDER BY d.patient_load ASC
+LIMIT 1;
 `
 
 const getNearestAvailability = `
@@ -73,12 +77,13 @@ AND
 
 const createAppointment = `
 INSERT INTO Appointments (availability_id, patient_id, hospital_id, doctor_id) 
-VALUES (
-  $1,
-  $2,
-  $3,
-  $4
-);`
+VALUES ($1, $2, $3, $4);`
+
+const updatePatientLoad = `
+UPDATE Doctors
+SET patient_load = patient_load + 1
+WHERE id = $1;
+`
 
 const updateAvailability = `
 UPDATE Availabilities 
@@ -97,6 +102,7 @@ module.exports = {
   getNearestAvailability,
   checkDoctorAvailability,
   createAppointment,
+  updatePatientLoad,
   updateAvailability,
   deleteAppointmentById
 }

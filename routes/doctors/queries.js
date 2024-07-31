@@ -3,7 +3,8 @@ SELECT
   doctors.id,
   doctors.name,
   specializations.name AS specialization,
-  hospitals.name AS hospital
+  hospitals.name AS hospital,
+  doctors.patient_load
 FROM Doctors
 JOIN Specializations ON doctors.specialization_id = specializations.id
 JOIN Hospitals ON doctors.hospital_id = hospitals.id;
@@ -14,7 +15,8 @@ SELECT
   doctors.id,
   doctors.name,
   specializations.name AS specialization,
-  hospitals.name AS hospital
+  hospitals.name AS hospital,
+  doctors.patient_load
 FROM Doctors
 JOIN Specializations ON doctors.specialization_id = specializations.id
 JOIN Hospitals ON doctors.hospital_id = hospitals.id

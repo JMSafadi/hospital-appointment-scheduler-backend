@@ -6,10 +6,13 @@ const getAppointments = async (req, res) => {
   const pool = req.app.get('pool')
   try {
     const client = await pool.connect()
-    const result = await client.query(queries.getAppointments)
-    res.status(200).json(result.rows)
+    const results = await client.query(queries.getAppointments)
+    if (!results.rows.length) {
+      return res.status(404).json({ message: 'There are no appointments scheduled yet.' })
+    }
+    res.status(200).json(results.rows)
   } catch (err) {
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: 'Internal server error', message: err.message })
   }
 }
 
@@ -83,6 +86,8 @@ const createAppointment = async (req, res) => {
 
     // // Add appointment to table in database
     await client.query(queries.createAppointment, [availability.id, patientId, availability.hospital_id, doctorId])
+    // Update patient load in doctor
+    await client.query(queries.updatePatientLoad, [doctorId])
     // Update availability
     await client.query(queries.updateAvailability, [availability.id])
 
