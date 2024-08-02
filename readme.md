@@ -83,7 +83,7 @@ docker-compose down -v
 ## API Documentation
 ### 1. Endpoint `api/v1/signin`:
 #### `POST` - `api/v1/signin`
-Register on app with name, email and password.
+Register on app with name, email and password. Mandatory step to use app.
 - Status code 201 if user added succesfully.
 - Status code 401 if email already exists.
 - Status code 500 if server error.
@@ -108,7 +108,7 @@ Response:
 
 ### 2. Endpoint `api/v1/login`:
 #### `POST` - `api/v1/login`
-Log in user.
+Log in user. Mandatory step to generate token and use app.
 - Status code 200 if logged succesfully.
 - Status code 401 if if email or password invalid. 
 - Status code 500 if server error.
@@ -116,7 +116,7 @@ Log in user.
 Request:
 ```
 curl -X 'POST'
-'api/patients'
+'api/login'
 -d 
 {
   "email": "julianmatiassafadi@gmail.com",
@@ -133,6 +133,7 @@ Response:
 
 ### 3. Endpoint `api/v1/`:
 #### `GET` - `api/v1/`
+Main app endpoint. Only returns a message if the server is working correctly.
 - Status code 200 if server OK.
 - Status code 500 if server error.
 
@@ -148,7 +149,8 @@ Response:
 }
 ```
 
-#### `POST` - `api/v1/` - Initialize database, tables, relations and static data.
+#### `POST` - `api/v1/`
+Main app endpoint to initialize database, tables, relations and static data. From this point, user must be authenticated sending token from headers.
 - Status code 200 if db initialize succesfully.
 - Status code 401 if user is not authenticated.
 - Status code 403 if invalid token.
@@ -414,36 +416,36 @@ Response:
 }
 ```
 
-### `POST` - `api/v1/appointments`
-Create new record about an appointment in database. 
-The request body must contain a specialization, or symptoms information to be successful.
-- Status code 201 if appointment has been created successfully.
+### `POST` - `api/v1/appointments/search`
+Search for an availability by request. 
+The request body must contain a specialization, or symptoms information to be successful. Returns availabilities in order by nearest. Then must execute /appointments/create to create the appointment with the selected id.
+- Status code 201 if if there are availabilities available for patient request.
 - Status code 401 if user is not authenticated.
 - Status code 403 if invalid token.
-- Status code 404 if some requested resource is not found.
+- Status code 404 if no availability matches.
 - Status code 500 if server error.
 
 Request examples:
 ```
 curl -X 'POST'
-'api/v1/appointments'
+'api/v1/appointments/search'
 -d 
 {
-  "symptoms": ["Chest pain", "Shortness of breath"],
-  "specialization": "Cardiology"
+  "symptoms": ["Loss of coordination", "Severe headaches"],
+  "specialization": "Neurology"
 }
 ```
 ```
 curl -X 'POST'
-'api/v1/appointments'
+'api/v1/appointments/search'
 -d 
 {
-  "symptoms": ["Chest pain", "Shortness of breath"],
+  "symptoms": ["Loss of coordination", "Severe headaches"],
 }
 ```
 ```
 curl -X 'POST'
-'api/v1/appointments'
+'api/v1/appointments/search'
 -d 
 {
   "specialization": "Neurology"
@@ -451,9 +453,50 @@ curl -X 'POST'
 ```
 Response:
 ```
+[
+  "availabilities": [
+    {
+      "id": 1,
+      "date": "2024-08-05 10:00:00",
+      "doctor": "Dra. Olivia Garcia",
+      "hospital": "Hopewell Medical Center",
+      "specialization": "Neurology"
+    }
+    {
+      "id": 2,
+      "date": "2024-08-05 12:00:00",
+      "doctor": "Dra. Isabella Flores",
+      "hospital": "Hopewell Medical Center",
+      "specialization": "Neurology"
+    }
+  ]
+]
+```
+
+### `POST` - `api/v1/appointments/create`
+Create new record about an appointment in database. 
+The request body must contain the id of choosen appointment availability.
+- Status code 201 if appointment has been created successfully.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 404 if requested resource is not found.
+- Status code 500 if server error.
+
+Request examples:
+```
+curl -X 'POST'
+'api/v1/appointments/create'
+-d 
+{
+  "selected_availabilty_id": 2
+}
+```
+
+Response:
+```
 {
   "message": "Appointment created succesfully for patient Julian Safadi",
-  "date": "2024-09-20 20:00:00",
+  "date": "2024-08-05 12:00:00",
   "hospital": "Hopewell Medical Center",
   "doctor": "Dra. Isabella Flores"
 }
