@@ -482,6 +482,7 @@ The request body must contain the id of choosen appointment availability.
 - Status code 404 if requested resource is not found.
 - Status code 500 if server error.
 
+
 Request examples:
 ```
 curl -X 'POST'
