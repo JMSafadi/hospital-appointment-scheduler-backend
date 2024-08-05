@@ -8,7 +8,8 @@ const router = express.Router()
 router.get('/', authenticateToken, controller.getAppointments)
 router.get('/:id', authenticateToken, controller.getAppointmentById)
 
-router.post('/', authenticateToken, controller.createAppointment)
+router.post('/search', authenticateToken, controller.searchAppointment)
+router.post('/create', authenticateToken, controller.createAppointment)
 
 router.delete('/:id', authenticateToken, controller.deleteAppointmentById)
 

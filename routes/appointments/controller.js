@@ -16,7 +16,7 @@ const getAppointments = async (req, res) => {
   }
 }
 
-// Method to one appointment by id from DB
+// Method to get one appointment by id from DB
 const getAppointmentById = async (req, res) => {
   const pool = req.app.get('pool')
   const id = parseInt(req.params.id)
@@ -32,13 +32,11 @@ const getAppointmentById = async (req, res) => {
   }
 }
 
-// Method to set a new appointment by user
-const createAppointment = async (req, res) => {
+// Method to search for availabilities in order by date
+const searchAppointment = async (req, res) => {
   const { symptoms, specialization } = req.body
   const pool = req.app.get('pool')
   const client = await pool.connect()
-
-  // Extrat patient name with JWT
   const token = req.header('x-auth-token')
   let patient
   try {
@@ -50,44 +48,73 @@ const createAppointment = async (req, res) => {
 
   try {
     await client.query('BEGIN;')
+    let doctorResult
+    if (specialization) {
+      doctorResult = await client.query(queries.getDoctorBySpecialization, [specialization])
+    } else if (symptoms) {
+      doctorResult = await client.query(queries.getDoctorBySymptom, [symptoms])
+    }
+    if (!doctorResult || !doctorResult.rows.length) {
+      await client.query('ROLLBACK;')
+      return  res.status(404).json({ message: 'No doctor found for the required specialization.' })
+    }
 
+    const doctorIds = doctorResult.rows.map(row => row.id)
+
+    const availabilitiesResults = await client.query(queries.getNearestAvailabilities, [doctorIds])
+    if (!availabilitiesResults.rows.length) {
+      await client.query('ROLLBACK;')
+      return res.status(404).json({ message: 'No available appointments found.' })
+    }
+    await client.query('COMMIT;')
+    client.release()
+    res.status(200).json({ availabilities: availabilitiesResults.rows })
+  } catch (err) {
+    await client.query('ROLLBACK;')
+    client.release()
+    res.status(500).json({ error: 'Internal server error', message: err.message })
+  }
+}
+
+
+// Method to set a new appointment by user with availability ID.
+const createAppointment = async (req, res) => {
+  // Get availability ID
+  const { availabilityId } = req.body
+  const pool = req.app.get('pool')
+  const client = await pool.connect()
+  // Extract patient name with JWT
+  const token = req.header('x-auth-token')
+  let patient
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    patient = decoded.name
+  } catch (err) {
+    res.status(401).json({ message: 'Unauthorized: Invalid Token' })
+  }
+
+  try {
+    await client.query('BEGIN;')
     // Check if patient, hospital and doctor exists
     const patientResult = await client.query(queries.checkPatientExists, [patient])
-    console.log(patient)
-
     if (!patientResult.rows.length) {
       await client.query('ROLLBACK;')
       return res.status(404).json({ message: 'Patient not found.' })
     }
     const patientId = patientResult.rows[0].id
 
-    // Get doctor with requested specialization or symptoms
-    let doctorResult
-    if (specialization) {
-      doctorResult = await client.query(queries.getDoctorBySpecialization, [specialization])
-    } else if (symptoms) {
-      // Format symtpms array for Postgres
-      doctorResult = await client.query(queries.getDoctorBySymptom, [symptoms])
-    }
-    if (!doctorResult || !doctorResult.rows.length) {
-      await client.query('ROLLBACK;')
-      return res.status(404).json({ message: 'No doctor found for the selected specialization or symptoms.' })
-    }
-    const doctorId = doctorResult.rows[0].id
-
-    // Find the nearest availability
-    const availabilityResult = await client.query(queries.getNearestAvailability, [doctorId])
+    // Get availability details
+    const availabilityResult = await client.query(queries.getAvailabilityById, [availabilityId])
     if (!availabilityResult.rows.length) {
       await client.query('ROLLBACK;')
-      return res.status(404).json({ message: 'No available appointments for the selected specialization.' })
+      return res.status(404).json({ message: 'Availability not found.' })
     }
     const availability = availabilityResult.rows[0]
-    console.log(availability)
 
-    // // Add appointment to table in database
-    await client.query(queries.createAppointment, [availability.id, patientId, availability.hospital_id, doctorId])
+    // Add appointment to table in database
+    await client.query(queries.createAppointment, [availability.id, patientId, availability.hospital_id, availability.doctor_id])
     // Update patient load in doctor
-    await client.query(queries.updatePatientLoad, [doctorId])
+    await client.query(queries.addPatientLoad, [availability.doctor_id])
     // Update availability
     await client.query(queries.updateAvailability, [availability.id])
 
@@ -119,10 +146,14 @@ const deleteAppointmentById = async (req, res) => {
       client.release()
       return res.status(404).json({ message: 'ID appointment not found.'} )
     }
+    const doctor = results.rows[0].doctor
+
     // Get availability
     const availabilityId = results.rows[0].availability_id
     // Delete appointment
     await client.query(queries.deleteAppointmentById, [id])
+    // Update patient load in doctor
+    await client.query(queries.subtractPatientLoad, [doctor])
     // Update availability
     await client.query('UPDATE Availabilities SET is_available = TRUE WHERE ID = $1;', [availabilityId])
 
@@ -133,13 +164,13 @@ const deleteAppointmentById = async (req, res) => {
     await client.query('ROLLBACK;')
     client.relase()
     res.status(500).json({ error: "Internal server error", message: err.message })
-
   }
 }
 
 module.exports = {
   getAppointments,
   getAppointmentById,
+  searchAppointment,
   createAppointment,
   deleteAppointmentById
 }
