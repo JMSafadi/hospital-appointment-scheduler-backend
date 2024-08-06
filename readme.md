@@ -633,6 +633,7 @@ Retrieves one specific availability by unique id.
 | --- | --- | --- | --- |
 | availability_id | integer | Yes | Unique ID to search for a doctor. |
 
+Request:
 ```
 curl -X 'GET'
 'api/v1/availabilities/2'
