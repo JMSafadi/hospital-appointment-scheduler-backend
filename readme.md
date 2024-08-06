@@ -416,11 +416,11 @@ Response:
   "doctor": "Dra. Isabella Flores"
 },
 {
-		"id": 2,
-		"patient": "Julian Safadi",
-		"date": "2024-09-15 11:30:00",
-		"hospital": "Hopewell Medical Center",
-		"doctor": "Dra. Evelyn Rodriguez"
+  "id": 2,
+  "patient": "Julian Safadi",
+  "date": "2024-09-15 11:30:00",
+  "hospital": "Hopewell Medical Center",
+  "doctor": "Dra. Evelyn Rodriguez"
 }]
 ```
 
