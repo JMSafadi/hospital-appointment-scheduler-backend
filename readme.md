@@ -6,17 +6,18 @@
 3. [Base URL](#base-url)
 4. [Database Diagram](#database-diagram)
 5. [Install](#install)
-6. [Run](#run)<br>
-7. [API Documentation](#api-documentation)<br>
-7.1 [api/v1/signin](#)<br>
-7.2 [api/v1/login](#)<br>
-7.3 [api/v1/](#)<br>
-7.4 [api/v1/patients](#)<br>
-7.5 [api/v1/doctors](#)<br>
-7.6 [api/v1/hospitals](#)<br>
-7.7 [api/v1/appointments](#)<br>
-7.8 [api/v1/specializations](#)<br>
-7.9 [api/v1/availabilities](#)<br>
+6. [Enviroment config](#enviroment-config)
+7. [Run](#run)<br>
+8. [API Documentation](#api-documentation)<br>
+8.1 [api/v1/signin](#)<br>
+8.2 [api/v1/login](#)<br>
+8.3 [api/v1/](#)<br>
+8.4 [api/v1/patients](#)<br>
+8.5 [api/v1/doctors](#)<br>
+8.6 [api/v1/hospitals](#)<br>
+8.7 [api/v1/appointments](#)<br>
+8.8 [api/v1/specializations](#)<br>
+8.9 [api/v1/availabilities](#)<br>
 
 
 ## Description
@@ -60,6 +61,20 @@ cd .\hospital-appointment-scheduler-backend
 ```
 npm install
 ```
+
+## Enviroment config
+For the application to work properly, you need to configure a .env file in the root project with the following enviroments variables.
+Ensure to replace example values.
+```
+PORT=3000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=example_password
+DB_NAME=example_db_name
+JWT_SECRET=your_secret_key
+```
+
+
 
 ## Run with Docker containers
 To run application with Docker you must have Docker installed in your machine.<br>
