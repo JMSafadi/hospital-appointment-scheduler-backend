@@ -489,7 +489,7 @@ curl -X 'POST'
 'api/v1/appointments/create'
 -d 
 {
-  "selected_availabilty_id": 2
+  "availabilityId": 2
 }
 ```
 
