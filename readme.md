@@ -378,7 +378,7 @@ Retrieves one specific hospital by unique id.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| doctor_id | integer | Yes | Unique ID to search for a doctor. |
+| hospital_id | integer | Yes | Unique ID to search for a hospital. |
 
 ```
 curl -X 'GET'
@@ -604,7 +604,7 @@ Retrieves one specific specialization by unique id.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| specialization_id | integer | Yes | Unique ID to search for a doctor. |
+| specialization_id | integer | Yes | Unique ID to search for a specialization. |
 
 ```
 curl -X 'GET'
@@ -664,7 +664,7 @@ Retrieves one specific availability by unique id.
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| availability_id | integer | Yes | Unique ID to search for a doctor. |
+| availability_id | integer | Yes | Unique ID to search for a availability. |
 
 Request:
 ```
