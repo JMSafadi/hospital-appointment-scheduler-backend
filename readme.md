@@ -9,9 +9,9 @@
 6. [Enviroment config](#enviroment-config)
 7. [Run](#run)<br>
 8. [API Documentation](#api-documentation)<br>
-8.1 [api/v1/signin](#)<br>
-8.2 [api/v1/login](#)<br>
-8.3 [api/v1/](#)<br>
+8.1 [api/v1/](#)<br>
+8.2 [api/v1/signin](#)<br>
+8.3 [api/v1/login](#)<br>
 8.4 [api/v1/patients](#)<br>
 8.5 [api/v1/doctors](#)<br>
 8.6 [api/v1/hospitals](#)<br>
@@ -74,8 +74,6 @@ DB_NAME=example_db_name
 JWT_SECRET=your_secret_key
 ```
 
-
-
 ## Run with Docker containers
 To run application with Docker you must have Docker installed in your machine.<br>
 [Download Docker](https://www.docker.com/products/docker-desktop/)
@@ -96,59 +94,10 @@ docker-compose down -v
 ```
 
 ## API Documentation
-### 1. Endpoint `api/v1/signin`:
-#### `POST` - `api/v1/signin`
-Register on app with name, email and password. Mandatory step to use app.
-- Status code 201 if user added succesfully.
-- Status code 401 if email already exists.
-- Status code 500 if server error.
-
-Request:
-```
-curl -X 'POST'
-'api/v1/signin'
--d
-{
-  "name": "Julian Safadi"
-  "email": "julianmatiassafadi@gmail.com",
-  "password": "_pass123"
-}
-```
-Response:
-```
-{
-  "message": 'Patient added successfully.'
-}
-```
-
-### 2. Endpoint `api/v1/login`:
-#### `POST` - `api/v1/login`
-Log in user. Mandatory step to generate token and use app.
-- Status code 200 if logged succesfully.
-- Status code 401 if if email or password invalid. 
-- Status code 500 if server error.
-
-Request:
-```
-curl -X 'POST'
-'api/login'
--d 
-{
-  "email": "julianmatiassafadi@gmail.com",
-  "password": "_pass123"
-}
-```
-Response:
-```
-{
-  message: 'Logged in successfully.', 
-  jwt: token 
-}
-```
-
-### 3. Endpoint `api/v1/`:
+### 1. Endpoint `api/v1/`:
 #### `GET` - `api/v1/`
-Main app endpoint. Only returns a message if the server is working correctly.
+Main app endpoint. 
+Only returns a message if the server is working correctly.
 - Status code 200 if server OK.
 - Status code 500 if server error.
 
@@ -179,7 +128,76 @@ curl -X 'POST'
 Response:
 ```
 {
-  "message": "Database Initialized succesfully.""
+  "message": "Database Initialized succesfully."
+}
+```
+
+#### `DELETE` - `api/v1/`
+Delete all database.
+- Status code 200 if all delete succesfully.
+- Status code 401 if user is not authenticated.
+- Status code 403 if invalid token.
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'DELETE'
+'api/v1/'
+```
+Response:
+```
+{
+  "message": "All tables deleted."
+}
+```
+
+### 2. Endpoint `api/v1/signin`:
+#### `POST` - `api/v1/signin`
+Register on app with name, email and password. Mandatory step to use app.
+- Status code 201 if user added succesfully.
+- Status code 401 if email already exists.
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'POST'
+'api/v1/signin'
+-d
+{
+  "name": "Julian Safadi"
+  "email": "julianmatiassafadi@gmail.com",
+  "password": "_pass123"
+}
+```
+Response:
+```
+{
+  "message": 'Patient added successfully.'
+}
+```
+
+### 3. Endpoint `api/v1/login`:
+#### `POST` - `api/v1/login`
+Log in user. Mandatory step to generate token and use app.
+- Status code 200 if logged succesfully.
+- Status code 401 if if email or password invalid. 
+- Status code 500 if server error.
+
+Request:
+```
+curl -X 'POST'
+'api/login'
+-d 
+{
+  "email": "julianmatiassafadi@gmail.com",
+  "password": "_pass123"
+}
+```
+Response:
+```
+{
+  message: 'Logged in successfully.', 
+  jwt: token 
 }
 ```
 
