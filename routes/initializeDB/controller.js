@@ -5,7 +5,6 @@ const initializeDb = async (req, res) => {
     // Execute initialize DB query
     const pool = req.app.get('pool')
     const client = await pool.connect()
-    console.log('Successfully connected to the database')
     await client.query(queries.initializeDBQuery)
     client.release()
     res.status(200).json({ message: 'Database Initialized succesfully.' })
