@@ -78,9 +78,14 @@ JWT_SECRET=your_secret_key
 To run application with Docker you must have Docker installed in your machine.<br>
 [Download Docker](https://www.docker.com/products/docker-desktop/)
 
-Create containers and run app:
+Create containers:
 ```
-docker-compose up --build
+docker-compose create
+```
+
+Run application:
+```
+docker-compose up
 ```
 
 Stop running app:
