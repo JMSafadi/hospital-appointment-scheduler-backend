@@ -31,7 +31,7 @@ services:
       - /hospital-appointment-scheduler/node_modules
     depends_on:
       - db
-    command: nodemon app.js
+    command: nodemon index.js
 
 volumes:
  db-data:
