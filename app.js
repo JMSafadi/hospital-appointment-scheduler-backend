@@ -30,5 +30,5 @@ app.use('/api/v1/availabilities', availabilitiesRouter)
 app.use('/api/v1/appointments', appointmentsRouter)
 app.use('/api/v1/hospitals', hospitalsRouter)
 app.use('/api/v1/specializations', specializationsRouter)
-    
+
 module.exports = app

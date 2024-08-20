@@ -1,5 +1,5 @@
 const app = require('./app')
-const connectDatabase = require('./db/database')
+const { connectDatabase } = require('./db/database')
 const port = 3000
 
 connectDatabase()
