@@ -1,6 +1,6 @@
 const express = require('express')
 const controller = require('./controller')
-const { authenticateToken } = require('../../middlewares/authenticateToken')
+// const { authenticateToken } = require('../../middlewares/authenticateToken')
 
 const router = express.Router()
 
@@ -11,6 +11,6 @@ router.get('/', (req, res) => {
 
 router.post('/', controller.initializeDb)
 
-router.delete('/', authenticateToken, controller.deleteAll)
+router.delete('/', controller.deleteAll)
 
 module.exports = router

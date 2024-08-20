@@ -3,14 +3,14 @@ const queries = require('./queries')
 
 // Method to POST new patient
 const addPatient = async (req, res) => {
-  const pool = req.app.get('pool')
   try {
+    const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
     const { name, email, password } = req.body
     // Check if patient already exists
     const client = await pool.connect()
     const results = await client.query(queries.checkEmailExists, [email])
     if (results.rows.length) {
-      return res.status(401).json({ message: 'Email already exists.' })
+      return res.status(409).json({ message: 'Email already exists.' })
     }
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10)

@@ -2,8 +2,8 @@ const queries = require('./queries')
 
 const initializeDb = async (req, res) => {
   try {
-    // Execute initialize DB query
-    const pool = req.app.get('pool')
+    const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
+
     const client = await pool.connect()
     await client.query(queries.initializeDBQuery)
     client.release()
@@ -16,7 +16,7 @@ const initializeDb = async (req, res) => {
 
 const deleteAll = async (req, res) => {
   try {
-    const pool = req.app.get('pool')
+    const pool = req.app.get('testPool') || req.app.get('pool')
     const client = await pool.connect()
     await client.query(
       `DROP TABLE IF EXISTS Appointments CASCADE;
@@ -25,6 +25,13 @@ const deleteAll = async (req, res) => {
         DROP TABLE IF EXISTS Patients CASCADE;
         DROP TABLE IF EXISTS Specializations CASCADE;
         DROP TABLE IF EXISTS Hospitals CASCADE;
+
+        DROP SEQUENCE IF EXISTS hospitals_id_seq CASCADE;
+        DROP SEQUENCE IF EXISTS doctors_id_seq CASCADE;
+        DROP SEQUENCE IF EXISTS patients_id_seq CASCADE;
+        DROP SEQUENCE IF EXISTS availabilities_id_seq CASCADE;
+        DROP SEQUENCE IF EXISTS appointments_id_seq CASCADE;
+
       `)
       res.status(200).json({ message: "All tables deleted." })
   } catch (err) {

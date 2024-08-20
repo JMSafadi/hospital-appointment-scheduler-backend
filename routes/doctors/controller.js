@@ -2,8 +2,8 @@ const queries = require('./queries')
 
 // Method to GET all doctors from DB
 const getDoctors = async (req, res) => {
-  const pool = req.app.get('pool')
   try {
+    const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
     const client  = await pool.connect()
     const results = await client.query(queries.getDoctors)
     client.release()
@@ -15,7 +15,7 @@ const getDoctors = async (req, res) => {
 
 // Method to GET one doctor by id from DB
 const getDoctorById = async (req, res) => {
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   const id = parseInt(req.params.id)
   try {
     const client = await pool.connect()

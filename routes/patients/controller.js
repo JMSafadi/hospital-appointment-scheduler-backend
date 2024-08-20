@@ -2,7 +2,7 @@ const queries = require('./queries')
 
 // Method to GET all patients from DB
 const getPatients = async (req, res) => {
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   try {
     const client = await pool.connect()
     const result = await client.query(queries.getPatients)
@@ -15,7 +15,7 @@ const getPatients = async (req, res) => {
 
 // Method to GET one patient by id from DB
 const getPatientById = async (req, res) => {
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   const id = parseInt(req.params.id)
   try {
     const client = await pool.connect()
@@ -31,7 +31,7 @@ const getPatientById = async (req, res) => {
 }
 
 const deletePatient = async (req, res) => {
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   const id = parseInt(req.params.id)
   try {
     const client = await pool.connect()

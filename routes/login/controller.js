@@ -4,8 +4,8 @@ const jwt = require('../../lib/jwt')
 const queries = require('./queries')
 
 const loginPatient = async (req, res) => {
-  const pool = req.app.get('pool')
   try {
+    const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
     const { email, password } = req.body
     // Check if patient already exists
     const client = await pool.connect()
