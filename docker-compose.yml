@@ -5,9 +5,9 @@ services:
     image: postgres:latest
     container_name: postgres_hospital_db
     environment:
-      - POSTGRES_PASSWORD=${DB_PASS}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
@@ -18,12 +18,12 @@ services:
       context: .
     container_name: hospital_app
     environment:
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
-      - DB_HOST=${DB_HOST}
-      - DB_DIALECT=${DB_DIALECT}
-      - DB_PORT=${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_HOST: ${DB_HOST}
+      DB_DIALECT: ${DB_DIALECT}
+      DB_PORT: ${DB_PORT}
     ports:
       - "3000:3000"
     volumes:
@@ -32,6 +32,36 @@ services:
     depends_on:
       - db
     command: nodemon index.js
+    
+  test-db:
+    image: postgres:latest
+    container_name: test_postgres_hospital_db
+    environment:
+      POSTGRES_PASSWORD: ${TEST_DB_PASS}
+      POSTGRES_USER: ${TEST_DB_USER}
+      POSTGRES_DB: ${TEST_DB_NAME}
+    volumes:
+      - test-db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  test:
+    build:
+      context: .
+    container_name: test_hospital_app
+    environment:
+      TEST_DB_NAME: ${TEST_DB_NAME}
+      TEST_DB_USER: ${TEST_DB_USER}
+      TEST_DB_PASS: ${TEST_DB_PASS}
+      TEST_DB_HOST: ${TEST_DB_HOST}
+      TEST_DB_PORT: ${TEST_DB_PORT}
+      NODE_ENV: test
+    volumes:
+      - .:/hospital-appointment-scheduler
+      - /hospital-appointment-scheduler/node_modules
+    depends_on:
+      - test-db
 
 volumes:
- db-data:
+  db-data:
+  test-db-data:
