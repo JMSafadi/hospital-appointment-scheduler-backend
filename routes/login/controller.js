@@ -4,11 +4,11 @@ const jwt = require('../../lib/jwt')
 const queries = require('./queries')
 
 const loginPatient = async (req, res) => {
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
+  const client = await pool.connect()
   try {
-    const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
     const { email, password } = req.body
     // Check if patient already exists
-    const client = await pool.connect()
     const results = await client.query(queries.checkEmailExists, [email])
     // If patient doens't exists
     if (!results.rows.length) {
@@ -33,6 +33,7 @@ const loginPatient = async (req, res) => {
     client.release()
     res.status(200).json({ message: 'Logged in successfully.', jwt: token })
   } catch (err) {
+    client.release()
     res.status(500).json({ error: 'Internal server error', message: err.message })
   }
 }

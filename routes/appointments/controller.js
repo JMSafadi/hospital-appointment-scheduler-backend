@@ -3,31 +3,35 @@ const jwt = require('../../lib/jwt')
 
 // Method to GET all appointments from DB
 const getAppointments = async (req, res) => {
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
+  const client = await pool.connect()
   try {
-    const client = await pool.connect()
     const results = await client.query(queries.getAppointments)
     if (!results.rows.length) {
       return res.status(404).json({ message: 'There are no appointments scheduled yet.' })
     }
+    client.release()
     res.status(200).json(results.rows)
   } catch (err) {
+    client.release()
     res.status(500).json({ error: 'Internal server error', message: err.message })
   }
 }
 
 // Method to get one appointment by id from DB
 const getAppointmentById = async (req, res) => {
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   const id = parseInt(req.params.id)
+  const client = await pool.connect()
   try {
-    const client = await pool.connect()
     const results = await client.query(queries.getAppointmentById, [id])
     if (!results.rows.length) {
       return res.status(404).json({ message: 'ID appointment not found.'} )
     }
+    client.release()
     res.status(200).json(results.rows)
   } catch (err) {
+    client.release()
     res.status(500).json({ error: 'Internal server error', message: err.message })
   }
 }
@@ -35,7 +39,7 @@ const getAppointmentById = async (req, res) => {
 // Method to search for availabilities in order by date
 const searchAppointment = async (req, res) => {
   const { symptoms, specialization } = req.body
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   const client = await pool.connect()
   const token = req.header('x-auth-token')
   let patient
@@ -43,6 +47,7 @@ const searchAppointment = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     patient = decoded.name
   } catch (err) {
+    client.release()
     res.status(401).json({ message: 'Unauthorized: Invalid Token' })
   }
 
@@ -56,6 +61,7 @@ const searchAppointment = async (req, res) => {
     }
     if (!doctorResult || !doctorResult.rows.length) {
       await client.query('ROLLBACK;')
+      client.release()
       return  res.status(404).json({ message: 'No doctor found for the required specialization.' })
     }
 
@@ -64,6 +70,7 @@ const searchAppointment = async (req, res) => {
     const availabilitiesResults = await client.query(queries.getNearestAvailabilities, [doctorIds])
     if (!availabilitiesResults.rows.length) {
       await client.query('ROLLBACK;')
+      client.release()
       return res.status(404).json({ message: 'No available appointments found.' })
     }
     await client.query('COMMIT;')
@@ -76,12 +83,11 @@ const searchAppointment = async (req, res) => {
   }
 }
 
-
 // Method to set a new appointment by user with availability ID.
 const createAppointment = async (req, res) => {
   // Get availability ID
   const { availabilityId } = req.body
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   const client = await pool.connect()
   // Extract patient name with JWT
   const token = req.header('x-auth-token')
@@ -90,15 +96,16 @@ const createAppointment = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     patient = decoded.name
   } catch (err) {
+    client.release()
     res.status(401).json({ message: 'Unauthorized: Invalid Token' })
   }
-
   try {
     await client.query('BEGIN;')
     // Check if patient, hospital and doctor exists
     const patientResult = await client.query(queries.checkPatientExists, [patient])
     if (!patientResult.rows.length) {
       await client.query('ROLLBACK;')
+      client.release()
       return res.status(404).json({ message: 'Patient not found.' })
     }
     const patientId = patientResult.rows[0].id
@@ -107,6 +114,7 @@ const createAppointment = async (req, res) => {
     const availabilityResult = await client.query(queries.getAvailabilityById, [availabilityId])
     if (!availabilityResult.rows.length) {
       await client.query('ROLLBACK;')
+      client.release()
       return res.status(404).json({ message: 'Availability not found.' })
     }
     const availability = availabilityResult.rows[0]
@@ -134,10 +142,10 @@ const createAppointment = async (req, res) => {
 }
 
 const deleteAppointmentById = async (req, res) => {
-  const pool = req.app.get('pool')
+  const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   const id = parseInt(req.params.id)
+  const client = await pool.connect()
   try {
-    const client = await pool.connect()
     await client.query('BEGIN;')
     // Check if appointment exists
     const results = await client.query(queries.getAppointmentById, [id])
@@ -162,7 +170,7 @@ const deleteAppointmentById = async (req, res) => {
     res.status(200).json({ message: "The appointment has been deleted successfully." })
   } catch (err) {
     await client.query('ROLLBACK;')
-    client.relase()
+    client.release()
     res.status(500).json({ error: "Internal server error", message: err.message })
   }
 }
