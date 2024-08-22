@@ -13,13 +13,13 @@ async function initializeDatabaseAndUser() {
   
   const responseDelete = await request(app)
     .delete('/api/v1')
-  console.log('Database cleanup before tests: ', responseDelete.body)
+  console.log(responseDelete.body.message)
 
   const initializeResponse = await request(app)
     .post('/api/v1/')
     .send()
   if (initializeResponse.statusCode === 200) {
-    console.log('Tables and data initialized for tests')
+    console.log(initializeResponse.body.message)
   }
 
   const userResponse = await request(app)
