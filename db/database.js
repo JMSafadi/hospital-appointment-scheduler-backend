@@ -32,8 +32,6 @@ const connectDatabase = async () => {
           port: process.env.DB_PORT
         })
       }
-      await devPool.connect()
-      console.log('Development pool connected:', devPool)
       return devPool
     } catch (err) {
       console.error('Error connecting to database:', err)
