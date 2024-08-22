@@ -4,7 +4,7 @@
   "description": "Hopistal Appointment Scheduler",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test jest --runInBand --forceExit",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },

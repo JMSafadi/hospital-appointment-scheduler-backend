@@ -1,22 +1,10 @@
-const { initializeDatabase } = require('./utils/initializeDbTest')
-
-let isDatabaseInitialized = false
+const { initializeDatabaseAndUser } = require('./utils/initializeDbTest')
 
 beforeAll(async () => {
-  if (!isDatabaseInitialized) {
-    await initializeDatabase()
-    isDatabaseInitialized = true
-  }
+  console.log('Initializing database and user for tests.')
+  await initializeDatabaseAndUser()
 })
 
-
 // afterAll(async () => {
-//   // let client = app.get('dbClient')
-//   // client.release()
-//   if (!testPool.ended) {
-//     await testPool.end()
-//     console.log('test pool ended')
-//   } else {
-//     console.log('test pool not closed')
-//   }
+
 // })
