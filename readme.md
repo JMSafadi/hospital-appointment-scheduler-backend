@@ -7,17 +7,19 @@
 4. [Database Diagram](#database-diagram)
 5. [Install](#install)
 6. [Enviroment config](#enviroment-config)
-7. [Run](#run)<br>
-8. [API Documentation](#api-documentation)<br>
-8.1 [api/v1/](#)<br>
-8.2 [api/v1/signin](#)<br>
-8.3 [api/v1/login](#)<br>
-8.4 [api/v1/patients](#)<br>
-8.5 [api/v1/doctors](#)<br>
-8.6 [api/v1/hospitals](#)<br>
-8.7 [api/v1/appointments](#)<br>
-8.8 [api/v1/specializations](#)<br>
-8.9 [api/v1/availabilities](#)<br>
+7. [Run](#run-with-docker-containers)<br>
+8. [Testing](#testing)<br>
+9. [API Documentation](#api-documentation)<br>
+  9.1 [api/v1/](#)<br>
+  9.2  [api/v1/signin](#)<br>
+  9.3  [api/v1/login](#)<br>
+  9.4  [api/v1/patients](#)<br>
+  9.5  [api/v1/doctors](#)<br>
+  9.6  [api/v1/hospitals](#)<br>
+  9.7  [api/v1/appointments](#)<br>
+  9.8  [api/v1/specializations](#)<br>
+  9.9  [api/v1/availabilities](#)<br>
+
 
 
 ## Description
@@ -31,13 +33,14 @@ This documentation covers all the endpoints, request and response, and other tec
 - Enviroment and server: Node/Express
 - Database managment: postgreSQL
 - Containerize App: Docker
+- Testing: Jest
 
 
 ## Base Url
 `http://localhost:3000/api/v1`
 
 
-## Database diagram with relations
+## Database diagram
 [![image.png](https://i.postimg.cc/RZ3hLLPm/image.png)](https://postimg.cc/dhYJqrPN)
 
 - Patients entity represents each user registered and has no foreign keys.
@@ -66,12 +69,21 @@ npm install
 For the application to work properly, you need to configure a .env file in the root project with the following enviroments variables.
 Ensure to replace example values.
 ```
+# Development enviroment
 PORT=3000
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=example_password
 DB_NAME=example_db_name
 JWT_SECRET=your_secret_key
+
+# Test enviroment
+TEST_DB_NAME=test_hospital_scheduler_db
+TEST_DB_USER=test_user
+TEST_DB_PASS=test_pass
+TEST_DB_HOST=test-db
+TEST_DB_DIALECT=postgres
+TEST_DB_PORT=5432
 ```
 
 ## Run with Docker containers
@@ -97,6 +109,13 @@ Delete containers and volumes:
 ```
 docker-compose down -v
 ```
+
+## Testing
+To execute all tests in the services defined on Docker, run the following command:
+```
+docker-compose exec test npm test
+```
+Make sure all the necessary containers are up and running before running the tests.
 
 ## API Documentation
 ### 1. Endpoint `api/v1/`:
