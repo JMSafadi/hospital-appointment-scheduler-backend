@@ -15,7 +15,7 @@ SELECT
   availabilities.is_available
 FROM Availabilities 
 JOIN Doctors ON availabilities.doctor_id = doctors.id
-WHERE id = $1;
+WHERE availabilities.id = $1;
 `
 
 module.exports = {
