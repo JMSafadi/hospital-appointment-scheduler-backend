@@ -79,13 +79,13 @@ describe('Appointments route', () => {
     expect(response.body.message).toBe('ID appointment not found.')
   })
   it('should return error if no doctor for the required specialization', async () => {
-    // jest.spyOn(client, 'query').mockImplementation((query, values) => {
-    //   if (query === queries.getDoctorBySpecialization) {
-    //     console.log('mocking')
-    //     return { rows: [] }
-    //   }
-    //   return null
-    // })
+    jest.spyOn(client, 'query').mockImplementation((query, values) => {
+      if (query === queries.getDoctorBySpecialization) {
+        console.log('mocking')
+        return { rows: [] }
+      }
+      return null
+    })
     const response = await request(app)
       .post('/api/v1/appointments/search')
       .set('x-auth-token', authToken)

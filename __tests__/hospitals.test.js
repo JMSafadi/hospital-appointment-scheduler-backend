@@ -9,6 +9,9 @@ describe('Hospitals route', () => {
     pool = app.get('testPool')
     authToken = app.get('testToken')
   })
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
   it('should retrieve a list with all hospitals', async () => {
     const response = await request(app)
       .get('/api/v1/hospitals')
@@ -32,13 +35,16 @@ describe('Hospitals route', () => {
     expect(response.statusCode).toBe(404)
     expect(response.body.message).toBe('ID hospital not found.')
   })
-  // it('should handle database connection errors', async () => {
-  //   // Simulate error
-  //   jest.spyOn(pool, 'connect').mockRejectedValue(new Error('Database connection error'))
-  //   const response = await request(app)
-  //     .get('/api/v1/hospitals')
-  //     .set('x-auth-token', authToken)
-  //   expect(response.statusCode).toBe(500)
-  //   expect(response.body.error).toBe('Internal server error')
-  // })
+  it('should handle server connection errors', async () => {
+    // Simulate error
+    jest.spyOn(pool, 'connect').mockImplementationOnce(() => {
+      throw new Error('Database connection failed')
+    })
+    const response = await request(app)
+      .get('/api/v1/doctors')
+      .set('x-auth-token', authToken)
+    expect(response.statusCode).toBe(500)
+    expect(response.body.error).toBe('Internal server error')
+    expect(response.body.message).toBe('Database connection failed')
+  })
 })

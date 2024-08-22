@@ -9,6 +9,10 @@ describe('Patients route', () => {
     pool = app.get('testPool')
     authToken = app.get('testToken')
   })
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+  
   it('should retrieve all patients', async () => {
     const response = await request(app)
       .get('/api/v1/patients')
@@ -46,5 +50,17 @@ describe('Patients route', () => {
       .set('x-auth-token', authToken)
     expect(response.statusCode).toBe(404)
     expect(response.body.message).toBe('Patient not exists. Can\'t be removed')
+  })
+  it('should handle server connection errors', async () => {
+    // Simulate error
+    jest.spyOn(pool, 'connect').mockImplementationOnce(() => {
+      throw new Error('Database connection failed')
+    })
+    const response = await request(app)
+      .get('/api/v1/doctors')
+      .set('x-auth-token', authToken)
+    expect(response.statusCode).toBe(500)
+    expect(response.body.error).toBe('Internal server error')
+    expect(response.body.message).toBe('Database connection failed')
   })
 })
