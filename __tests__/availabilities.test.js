@@ -20,15 +20,15 @@ describe('Availabilities route', () => {
     expect(Array.isArray(response.body)).toBe(true)
     expect(response.body.length).toBeGreaterThan(0)
   })
-  // it('should retrieve an availability by ID', async () => {
-  //   const response = await request(app)
-  //     .get('/api/v1/availabilities/1')
-  //     .set('x-auth-token', authToken)
-  //   expect(response.statusCode).toBe(200)
-  //   expect(Array.isArray(response.body)).toBe(true)
-  //   expect(response.body.length).toBe(1)
-  //   expect(response.body[0].id).toBe(1)
-  // })
+  it('should retrieve an availability by ID', async () => {
+    const response = await request(app)
+      .get('/api/v1/availabilities/1')
+      .set('x-auth-token', authToken)
+    expect(response.statusCode).toBe(200)
+    expect(Array.isArray(response.body)).toBe(true)
+    expect(response.body.length).toBe(1)
+    expect(response.body[0].id).toBe(1)
+  })
   it('should handle server connection errors', async () => {
     // Simulate error
     jest.spyOn(pool, 'connect').mockImplementationOnce(() => {
