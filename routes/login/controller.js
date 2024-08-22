@@ -5,14 +5,14 @@ const queries = require('./queries')
 
 const loginPatient = async (req, res) => {
   const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
-  const client = await pool.connect()
+  let client
   try {
+    client = await pool.connect()
     const { email, password } = req.body
     // Check if patient already exists
     const results = await client.query(queries.checkEmailExists, [email])
     // If patient doens't exists
     if (!results.rows.length) {
-      client.release()
       return res.status(401).json({ message: 'Invalid email or password.' })
     }
     const user = results.rows[0]
@@ -30,11 +30,11 @@ const loginPatient = async (req, res) => {
       },
       process.env.JWT_SECRET
     )
-    client.release()
     res.status(200).json({ message: 'Logged in successfully.', jwt: token })
   } catch (err) {
-    client.release()
     res.status(500).json({ error: 'Internal server error', message: err.message })
+  } finally {
+    if (client) client.release()
   }
 }
 
