@@ -5,7 +5,7 @@ const { connectDatabase } = require('../db/database')
 let client
 let testPool
 
-async function initializeDatabase() {
+async function initializeDatabaseAndUser() {
   testPool = await connectDatabase()
   app.set('testPool', testPool)
   client = await testPool.connect()
@@ -35,13 +35,10 @@ async function initializeDatabase() {
     .send({ email: 'testuser@example.com', password: 'password123' })
 
   const token = loginResponse.body.jwt
-
   app.set('testUser', userResponse.body)
   app.set('testToken', token)
-
-  console.log('Database initialization complete')
 }
 
 module.exports = {
-  initializeDatabase
+  initializeDatabaseAndUser
 }
