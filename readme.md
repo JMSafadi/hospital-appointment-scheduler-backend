@@ -70,20 +70,22 @@ For the application to work properly, you need to configure a .env file in the r
 Ensure to replace example values.
 ```
 # Development enviroment
-PORT=3000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=example_password
-DB_NAME=example_db_name
-JWT_SECRET=your_secret_key
+DB_NAME=hospital_scheduler
+DB_USER=example_user
+DB_PASS=example_password
+DB_HOST=db
+DB_DIALECT=postgres
+DB_PORT=5432
 
 # Test enviroment
 TEST_DB_NAME=test_hospital_scheduler_db
-TEST_DB_USER=test_user
-TEST_DB_PASS=test_pass
+TEST_DB_USER=example_test_user
+TEST_DB_PASS=example_test_pass
 TEST_DB_HOST=test-db
 TEST_DB_DIALECT=postgres
 TEST_DB_PORT=5432
+
+JWT_SECRET=example_secret_key
 ```
 
 ## Run with Docker containers
