@@ -10,7 +10,7 @@ async function initializeDatabaseAndUser() {
   app.set('testPool', testPool)
   client = await testPool.connect()
   app.set('dbClient', client)
-  
+
   const responseDelete = await request(app)
     .delete('/api/v1')
   console.log(responseDelete.body.message)

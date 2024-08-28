@@ -33,7 +33,7 @@ const deleteAll = async (req, res) => {
         DROP SEQUENCE IF EXISTS availabilities_id_seq CASCADE;
         DROP SEQUENCE IF EXISTS appointments_id_seq CASCADE;
       `)
-      res.status(200).json({ message: "All tables deleted." })
+    res.status(200).json({ message: 'All tables deleted.' })
   } catch (err) {
     res.status(500).json({ error: 'Internal server error', message: err.message })
   } finally {

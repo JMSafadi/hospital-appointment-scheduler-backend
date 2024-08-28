@@ -6,7 +6,7 @@ const router = express.Router()
 
 // HTTP requests
 router.get('/', authenticateToken, (req, res) => {
-  res.status(200).json({ "message": "Already logged in." })
+  res.status(200).json({ 'message': 'Already logged in.' })
 })
 router.post('/', controller.loginPatient)
 

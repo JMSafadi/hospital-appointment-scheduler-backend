@@ -42,16 +42,7 @@ const getAppointmentById = async (req, res) => {
 const searchAppointment = async (req, res) => {
   const { symptoms, specialization } = req.body
   const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
-  const token = req.header('x-auth-token')
-  let patient
-  let client = await pool.connect()
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    patient = decoded.name
-  } catch (err) {
-    res.status(401).json({ message: 'Unauthorized: Invalid Token' })
-  }
+  const client = await pool.connect()
 
   try {
     await client.query('BEGIN;')
@@ -90,13 +81,14 @@ const createAppointment = async (req, res) => {
   const pool = process.env.NODE_ENV === 'test' ? req.app.get('testPool') : req.app.get('pool')
   // Extract patient name with JWT
   const token = req.header('x-auth-token')
-  let client  = await pool.connect()
+  const client  = await pool.connect()
   let patient
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     patient = decoded.name
   } catch (err) {
+    console.error('Authenticate error: ', err)
     res.status(401).json({ message: 'Unauthorized: Invalid Token' })
   }
 
@@ -126,8 +118,8 @@ const createAppointment = async (req, res) => {
     await client.query(queries.updateAvailability, [availability.id])
 
     await client.query('COMMIT;')
-    res.status(201).json({ 
-      message: `Appointment created succesfully for patient ${patient}`, 
+    res.status(201).json({
+      message: `Appointment created succesfully for patient ${patient}`,
       date: availability.availability_time,
       hospital: availability.hospital_name,
       doctor: availability.doctor_name
@@ -165,10 +157,10 @@ const deleteAppointmentById = async (req, res) => {
     await client.query('UPDATE Availabilities SET is_available = TRUE WHERE ID = $1;', [availabilityId])
 
     await client.query('COMMIT;')
-    res.status(200).json({ message: "The appointment has been deleted successfully." })
+    res.status(200).json({ message: 'The appointment has been deleted successfully.' })
   } catch (err) {
     await client.query('ROLLBACK;')
-    res.status(500).json({ error: "Internal server error", message: err.message })
+    res.status(500).json({ error: 'Internal server error', message: err.message })
   } finally {
     if (client) client.release()
   }

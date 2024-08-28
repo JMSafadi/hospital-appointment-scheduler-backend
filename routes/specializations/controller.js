@@ -9,7 +9,7 @@ const getSpecializations = async (req, res) => {
     const results = await client.query(queries.getSpecializations)
     res.status(200).json(results.rows)
   } catch (err) {
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ error: 'Internal server error', message: err })
   } finally {
     if (client) client.release()
   }
