@@ -7,7 +7,6 @@ let client
 
 describe('Appointments route', () => {
   beforeAll(async () => {
-    pool = app.get('testPool')
     client = app.get('dbClient')
     authToken = app.get('testToken')
   })
