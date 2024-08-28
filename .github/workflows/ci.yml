@@ -35,16 +35,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          TEST_DB_NAME: ${{ secrets.TEST_DB_NAME }}
-          TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
-          TEST_DB_PASS: ${{ secrets.TEST_DB_PASS }}
-          TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }}
-          TEST_DB_PORT: ${{ secrets.TEST_DB_PORT }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASS }}
         ports:
           - 5434:5432
     steps:
@@ -61,3 +54,16 @@ jobs:
 
       - name: Stop and remove containers
         run: docker-compose down
+    env:
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_DIALECT: ${{ secrets.DB_DIALECT }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      TEST_DB_NAME: ${{ secrets.TEST_DB_NAME }}
+      TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
+      TEST_DB_PASS: ${{ secrets.TEST_DB_PASS }}
+      TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }}
+      TEST_DB_PORT: ${{ secrets.TEST_DB_PORT }}
+      NODE_ENV: test
