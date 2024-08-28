@@ -36,6 +36,8 @@ async function initializeDatabaseAndUser() {
 
   if (loginResponse.statusCode === 200) {
     console.log(loginResponse.body)
+  } else {
+    console.log(loginResponse.error)
   }
 
   const token = loginResponse.body.jwt
