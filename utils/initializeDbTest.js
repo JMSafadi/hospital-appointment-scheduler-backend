@@ -34,6 +34,10 @@ async function initializeDatabaseAndUser() {
     .post('/api/v1/login')
     .send({ email: 'testuser@example.com', password: 'password123' })
 
+  if (loginResponse.statusCode === 200) {
+    console.log(loginResponse.body)
+  }
+
   const token = loginResponse.body.jwt
   app.set('testUser', userResponse.body)
   app.set('testToken', token)
