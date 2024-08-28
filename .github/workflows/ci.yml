@@ -35,9 +35,16 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASS }}
-          POSTGRES_USER: ${{ secrets.TEST_DB_USER }}
-          POSTGRES_DB: ${{ secrets.TEST_DB_NAME }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          TEST_DB_NAME: ${{ secrets.TEST_DB_NAME }}
+          TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
+          TEST_DB_PASS: ${{ secrets.TEST_DB_PASS }}
+          TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }}
+          TEST_DB_PORT: ${{ secrets.TEST_DB_PORT }}
         ports:
           - 5434:5432
     steps:
