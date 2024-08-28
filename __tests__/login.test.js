@@ -4,7 +4,6 @@ const app = require('../app')
 describe('Login route', () => {
   let pool
   let authToken
-  
   beforeAll(async () => {
     pool = app.get('testPool')
     authToken = app.get('testToken')
@@ -23,8 +22,8 @@ describe('Login route', () => {
     const response = await request(app)
       .post('/api/v1/login')
       .send({
-        email: 'testuser@example.com', 
-        password: 'password123' 
+        email: 'testuser@example.com',
+        password: 'password123'
       })
     expect(response.statusCode).toBe(200)
     expect(response.body.message).toBe('Logged in successfully.')

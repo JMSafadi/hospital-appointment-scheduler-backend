@@ -4,7 +4,6 @@ const app = require('../app')
 describe('Patients route', () => {
   let pool
   let authToken
-
   beforeAll(async () => {
     pool = app.get('testPool')
     authToken = app.get('testToken')
@@ -12,7 +11,6 @@ describe('Patients route', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
-  
   it('should retrieve all patients', async () => {
     const response = await request(app)
       .get('/api/v1/patients')
@@ -41,7 +39,7 @@ describe('Patients route', () => {
     const response = await request(app)
       .delete('/api/v1/patients/1')
       .set('x-auth-token', authToken)
-      expect(response.statusCode).toBe(200)
+    expect(response.statusCode).toBe(200)
     expect(response.body.message).toBe('Patient deleted successfully')
   })
   it('should return error if try to delete a non-existent patient', async () => {

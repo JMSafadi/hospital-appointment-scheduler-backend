@@ -24,9 +24,9 @@ describe('Sing in route', () => {
     const response = await request(app)
       .post('/api/v1/signin')
       .send({
-        name: 'Test User1', 
-        email: 'testuser1@example.com', 
-        password: 'password13123' 
+        name: 'Test User1',
+        email: 'testuser1@example.com',
+        password: 'password13123'
       })
     expect(response.statusCode).toBe(201)
     expect(response.body.message).toBe('Patient added successfully.')
@@ -35,9 +35,9 @@ describe('Sing in route', () => {
     const response = await request(app)
       .post('/api/v1/signin')
       .send({
-        name: 'Test User1', 
-        email: 'testuser1@example.com', 
-        password: 'password13123' 
+        name: 'Test User1',
+        email: 'testuser1@example.com',
+        password: 'password13123'
       })
     expect(response.statusCode).toBe(409)
     expect(response.body.message).toBe('Email already exists.')

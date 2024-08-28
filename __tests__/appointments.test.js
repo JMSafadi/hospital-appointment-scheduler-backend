@@ -2,7 +2,6 @@ const request = require('supertest')
 const app = require('../app')
 const queries = require('../routes/appointments/queries')
 
-let pool
 let authToken
 let client
 
@@ -34,10 +33,10 @@ describe('Appointments route', () => {
       .set('x-auth-token', authToken)
     expect(response.statusCode).toBe(201)
     expect(response.body).toStrictEqual({
-      message: "Appointment created succesfully for patient Test User",
-      date: "2024-12-10 12:00:00",
-      hospital: "Harmony Medical Clinic",
-      doctor: "Dr. Braden Ashley"
+      message: 'Appointment created succesfully for patient Test User',
+      date: '2024-12-10 12:00:00',
+      hospital: 'Harmony Medical Clinic',
+      doctor: 'Dr. Braden Ashley'
     })
   })
   it('should retrieve a list with all appointments', async () => {
@@ -79,7 +78,7 @@ describe('Appointments route', () => {
     expect(response.body.message).toBe('ID appointment not found.')
   })
   it('should return error if no doctor for the required specialization', async () => {
-    jest.spyOn(client, 'query').mockImplementation((query, values) => {
+    jest.spyOn(client, 'query').mockImplementation((query) => {
       if (query === queries.getDoctorBySpecialization) {
         console.log('mocking')
         return { rows: [] }
@@ -92,7 +91,7 @@ describe('Appointments route', () => {
       .send({
         specialization: 'non-existent specialization',
       })
-      expect(response.statusCode).toBe(404)
-      expect(response.body.message).toBe('No doctor found for the required specialization.')
+    expect(response.statusCode).toBe(404)
+    expect(response.body.message).toBe('No doctor found for the required specialization.')
   })
 })

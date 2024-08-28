@@ -4,7 +4,6 @@ const app = require('../app')
 describe('Initialize database API', () => {
   let pool
   let authToken
-  
   beforeAll(async () => {
     pool = app.get('testPool')
     authToken = app.get('testToken')
