@@ -1,0 +1,58 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+
+  strategy:
+    matrix:
+      node-version: [18.x]
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
+
+test:
+  runs-on: ubuntu-latest
+  services:
+    postgres:
+      image: postgres:latest
+      env:
+        POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASS }}
+        POSTGRES_USER: ${{ secrets.TEST_DB_USER }}
+        POSTGRES_DB: ${{ secrets.TEST_DB_NAME }}
+      ports:
+        - 5432:5432
+  steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: docker-compose exec test npm test
