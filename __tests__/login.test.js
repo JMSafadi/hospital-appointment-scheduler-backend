@@ -7,6 +7,7 @@ describe('Login route', () => {
   beforeAll(async () => {
     pool = app.get('testPool')
     authToken = app.get('testToken')
+    console.log('authToken in file test: ', authToken)
   })
   afterEach(() => {
     jest.restoreAllMocks()

@@ -41,6 +41,7 @@ async function initializeDatabaseAndUser() {
   }
 
   const token = loginResponse.body.jwt
+  console.log('token in config: ', token)
   app.set('testUser', userResponse.body)
   app.set('testToken', token)
 }

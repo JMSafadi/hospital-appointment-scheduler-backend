@@ -1,3 +1,4 @@
+require('dotenv').config()
 const jwt = require('../lib/jwt')
 
 const authenticateToken = (req, res , next) => {
@@ -5,7 +6,6 @@ const authenticateToken = (req, res , next) => {
   if (!token) return res.sendStatus(401)
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET)
-    console.log('user: ', user)
     req.user = user
     next()
   } catch(err) {
