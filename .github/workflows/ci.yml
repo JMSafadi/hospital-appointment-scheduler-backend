@@ -47,6 +47,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: DEBUG JWT_SECRET
+        run: echo "JWT_SECRET is ${{ secrests.JWT_SECRET }}"
+
       - name: Build and Start Containers
         run: |
           docker compose up -d
