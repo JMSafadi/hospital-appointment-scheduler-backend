@@ -55,6 +55,7 @@ services:
       TEST_DB_PASS: ${TEST_DB_PASS}
       TEST_DB_HOST: ${TEST_DB_HOST}
       TEST_DB_PORT: ${TEST_DB_PORT}
+      JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: test
     volumes:
       - .:/hospital-appointment-scheduler
