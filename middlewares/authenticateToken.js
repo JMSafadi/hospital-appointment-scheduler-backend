@@ -1,4 +1,3 @@
-require('dotenv').config()
 const jwt = require('../lib/jwt')
 
 const authenticateToken = (req, res , next) => {
